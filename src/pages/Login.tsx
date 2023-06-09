@@ -1,4 +1,4 @@
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from 'react';
 
@@ -27,7 +27,7 @@ const schema = yup.object({
 
 export function Login() {
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
     //const {usuario, signInAction } = useAuth();
   
@@ -61,7 +61,7 @@ export function Login() {
       try {
         //await signInAction(data.usuario, data.senha);
   
-        history.push('/home');//redirect aqui ou
+        navigate('/home');//redirect aqui ou
       } catch (err) {
         if (request.isAxiosError(err) && err.response) {
           console.log((err.response.data).error);
