@@ -1,0 +1,15 @@
+.goodmessage{
+    text-align: center !important;
+    color:green !important;
+}
+
+
+
+@media (max-width: 750px){
+    .inputWidthNascimento{
+        max-width:6.2rem !important;
+    }
+    .inputWidth{
+        max-width:9.5rem !important;
+    }
+}

@@ -1,0 +1,45 @@
+Company
+-DadosCompany
+   - uuid_DadosCompany
+   - NomeCompany
+   - Telefone
+   - E-mail
+   - Endereço
+   - CNPJ
+   
+- Usuarios
+   - uuid_Usuarios
+   - uuid_DadosCompany
+   - isAdministrador:boolean
+   - cpf
+   - nome
+   - email
+   - uuid_cargos
+   - senha
+   
+- Cargos
+   - uuid_cargos
+   - NomeCargo
+   - DescricaoCargo
+   
+-DiariaViagem
+   - uuid_DiariaViagem
+   - uuid_Locais
+   - Data_Ida
+   - Data_Volta
+   - uuid_Equipe
+   - FuncionariosViagem [uuid_Usuario]
+   
+-Locais ->http://educacao.dadosabertosbr.com/api/cidades/ba
+   - uuid_Locais
+   - Pais
+   - Estada
+   - Ciadede
+	
+-Equipe
+   - uuid_Equipe
+   - NomeEquipe
+   - FuncionariosEquipe[uuid_Usuario] 
+   
+   
+   

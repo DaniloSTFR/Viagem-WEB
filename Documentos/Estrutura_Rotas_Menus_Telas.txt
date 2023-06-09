@@ -1,0 +1,56 @@
+
+Fora do Sistema
+ - Tela Login
+	- aviso de senha ou usuario incorreto - OK
+	- aviso de validação no cadastro - OK
+	- aviso de preenchimento de todos os campos - OK
+	
+ - Tela de Cadastro
+	- aviso de cadastro realizado e redirecionar para login - OK
+	- aviso de cadastro ja existente - OK
+
+Menus lateral
+
+	- Tela Inical 
+		- Mostrar dash board com estatisticas
+		
+
+	- Tela de gerenciamrento de funcionarios (ADM)
+		- Listar funcionarios - Ok
+		- Modal Editar cargos dos funcionarios 
+		- Modal Editar equipes dos funcionarios 
+		- Resetar senha do usuario para uma senha padrão
+		- Inativar funcionarios - Ok
+		- Modal de cadastro de funcionarios (ADM) - Ok
+			- campos {CPF, NOME, e-mail, senha (senha padrão 8 primeiros numeros cpf), cargo, equipe*, Definir como administrativo:Boolean}
+			- aviso de validação no cadastro de funcinario
+	
+	- Tela Gerencia de Cargos
+		- Listar cargos
+		- Modal Criar Cargos
+			- Nome do cargo
+			- Cargo Administrativo:Boolean
+		- Modal Editar Cargos
+		- Modal Inativa Cargos
+		- Filtro Cargos
+	
+	- Tela Gerencia de Equipe
+		- Listar Equipes
+		- Modal Criar Equipes
+			- Nome do Equipe
+		- ModalEditar Equipes
+		- Botão Inativa Equipes, pergunta de validação
+		- Filtro Equipe
+		
+	- Tela Cadastro de Viagens
+		- Modal Cadastras Viagens(LOCAL, DATA IDA E VOLTA, EQUIPE e Funcionários DA VIAGEM.)
+			- LOCAL (Pais, estado, cidade) se for Brasil usar a API
+		- Listar Viagens
+		- Modal Editar Viagens
+		- Botão Excluir Equipes, , pergunta de validação
+        - Filtro (Equipe, Data, Local) CheckBox Botão		
+	
+				
+	Extra	
+	- Editar perfil
+		- Editar senha

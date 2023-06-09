@@ -1,0 +1,131 @@
+#page-auth {
+
+  align-items: stretch;
+  height: 100vh;
+  max-width: 100% !important;
+  width: 100% !important;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+
+  .rowheight{
+    height: 100vh;
+  }
+  .form-floating > label {
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 32px;
+    color: #030000;
+  }
+
+  .form-floating > .form-control:focus ~ label, .form-floating > .form-control:not(:placeholder-shown) ~ label, .form-floating > .form-select ~ label {
+    opacity: 0.45 !important;
+    transform: scale(0.65) translateY(-0.5rem) translateX(0.15rem) !important;
+  }
+
+  .aside {
+    //flex: 7;
+    background: linear-gradient(122.59deg, #57B6E5 0%, #8257E5 69.5%);
+    color: #FFF;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 80px;
+
+    .divtocenter{
+      text-align: center;
+    }
+
+    img {
+      max-width: 260px;
+      text-align: center;
+      left: 40px;
+      margin-top: -110px;
+      padding-top: 10px;
+      //width: 15rem !important;
+    }
+    @media (max-width: 450px){
+      img {
+        width: 250px !important;
+        margin-top: -80px !important;
+        margin-left: -10px !important;
+        padding-top: 10px;
+      }
+
+    }
+
+    h5{
+      color: #df0b0b;
+      font-size: 1.2rem !important;
+      text-align: center;
+    }
+
+    
+
+    strong {
+      font: 700 36px 'Poppins', sans-serif;
+      line-height: 42px;
+      margin-top: 16px;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 32px;
+      margin-top: 16px;
+      color: #f8f8f8;
+      text-align: center;
+    }
+
+    input{
+      border-radius: 21px !important;
+      font-size: 20px !important;
+    }
+    button{
+      border-radius: 16px !important;
+    }
+    
+  }
+
+  @media (max-width: 450px){
+    .aside {
+      padding: 0px 15px!important;
+    }
+  }
+
+  .main {
+    flex: 7;
+    display: flex;
+    justify-content: center;
+    padding: 0px 80px;
+  }
+
+  .separator {
+    font-size: 14px;
+    color: #FFF;
+
+    margin: 32px 0;
+    display: flex;
+    align-items: center;
+
+    &::before {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #FFF;
+      margin-right: 16px;
+    }
+
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #FFF;
+      margin-left: 16px;
+    }
+  }
+}
+
+
+@media (min-width: 1400px){
+  .container {
+    width: 100% !important;  
+  }
+}
