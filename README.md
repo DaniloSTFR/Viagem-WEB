@@ -6,6 +6,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 ### `yarn install`
+Installs all dependencies listed in package.json into your local node_modules folder.
 
 ### `yarn start`
 
