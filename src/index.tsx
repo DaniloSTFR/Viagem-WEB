@@ -7,7 +7,7 @@ import './styles/pages.scss';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+      <App />
   </React.StrictMode>,
 )
 
