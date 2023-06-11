@@ -1,17 +1,17 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { auth, firebaseApp } from "../services/firebase";
 import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-}
+import { firebaseApp, auth, database } from '../services/firebase';
+import { signInWithEmailAndPassword, User, signOut } from "firebase/auth";
+import { collection, getDocs,} from "firebase/firestore";
+
 
 type AuthContextType = {
   user: User | undefined;
   signInWithGoogle: () => Promise<void>;
   signInAction: (email: string, password: string) => Promise<boolean>;
+  signOutAction: () => Promise<void>;
 }
 interface tokenAuth {
   token: string;
@@ -25,23 +25,20 @@ export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthContextProvider(props: AuthContextProviderProps) {
   const [user, setUser] = useState<User>();
-  const [cookies, setCookie] = useCookies(['token']);
   const [cookiesUuid, setCookiesUuid] = useCookies(['uuidUser']);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
+      console.log(user);
       if (user) {
-        const { displayName, photoURL, uid } = user
+        const { email, uid } = user
 
-        if (!displayName || !photoURL) {
+        if (!email || !uid) {
           throw new Error('Missing information from Google Account.');
         }
 
-        setUser({
-          id: uid,
-          name: displayName,
-          email: photoURL
-        })
+        setUser(user)
       }
     })
 
@@ -70,48 +67,42 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
         throw new Error('Missing information from Google Account.');
       }
 
-      setUser({
-        id: uid,
-        name: displayName,
-        email: photoURL
-      })
+      setUser(user);
     }
   }
 
   const signInAction = async (usuario: string, password: string) => {
 
-    const result = {
-      user:{
-        uuid: 'uuid080808080',
-        nomeUsuario: 'danilo ferreira',
-        displayName: 'a lenda de ang'
-      }
-    }
+    const { user } = await signInWithEmailAndPassword(auth, usuario, password);
+    console.log(user);
 
-    if (usuario === 'danilo' && password === '123456') {
-      const { displayName, nomeUsuario, uuid } = result.user
+    if (user) {
+      const { email, uid } = user;
 
-      if (!displayName || !nomeUsuario) {
+      if (!uid || !email) {
         throw new Error('Missing information from Google Account.');
       }
+      setUser(user);
 
-      setUser({
-        id: uuid,
-        name: nomeUsuario,
-        email: usuario
-      })
-
-      setCookiesUuid('uuidUser', uuid, { path: '/' });
+      setCookiesUuid('uuidUser', uid, { path: '/' });
       return true;
     }
 
     return false;
 }
 
+async function signOutAction() {
+
+  await signOut(auth).then(
+    () => navigate('/login')
+  )
+  
+}
+
   
   
   return (
-    <AuthContext.Provider value={{ user, signInWithGoogle, signInAction }}>
+    <AuthContext.Provider value={{ user, signInWithGoogle, signInAction, signOutAction }}>
       {props.children}
     </AuthContext.Provider>
   );

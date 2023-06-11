@@ -16,13 +16,17 @@ export function Employees() {
       </aside>
       <main className="content">
         <div className="flex-column d-flex justify-content-end">
-          <Button
-            type="button"
-            className="btn btn-success"
-            onClick={handleShow}
-          >
-            Adicionar Funcionario
-          </Button>
+
+          <div className="d-grid gap-2 d-md-flex justify-content-md-start setmarginbottom">
+              <Button
+                type="button"
+                className="btn btn-success btn-sm"
+                onClick={handleShow}
+              >
+                Adicionar Funcionario
+              </Button>
+          </div>
+
 
           <Modal show={show.open} onHide={handleClose}>
             <EmployeesForms func={show.function} data={null}/>
