@@ -1,28 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext'
-//import { Login } from "../../pages/Login";
-//import { AuthContext } from "./AuthContext";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 export const RequireAuth = ({ children }: { children: JSX.Element }) => {
-    const auth = useContext(AuthContext);
+    const auth = getAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const checkUser = async () => {
-            console.log('RequireAuth');
-            if (!auth.user) {
-                console.log(auth.user);
-                navigate('/');
-            }else{
+        const AuthCheck = onAuthStateChanged(auth, (user) => {
+            if (user) {
                 setLoading(false);
+            } else {
+                console.log('unauthorized');
+                navigate('/login');
             }
-        }
-        checkUser();
-         // eslint-disable-next-line
-    }, [children]);
+        });
+
+        return () => AuthCheck();
+        // eslint-disable-next-line
+    }, [auth]);
 
     if (loading) return <p>Carregando...</p>;
 

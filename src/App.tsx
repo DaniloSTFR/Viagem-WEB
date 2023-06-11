@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { Home } from "./pages/Home";
 import { NewRegister } from "./pages/NewRegister"
 import { Employees } from "./pages/Employees";
@@ -18,12 +18,16 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/cadastrar" element={<NewRegister />} />
           <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
-          <Route path="/cadastrar" element={<RequireAuth><NewRegister /></RequireAuth>} />
           <Route path="/funcionarios" element={<RequireAuth><Employees /></RequireAuth>} />
           <Route path="/cargos" element={<RequireAuth><Positions /></RequireAuth>} />
           <Route path="/equipes" element={<RequireAuth><Teams /></RequireAuth>} />
           <Route path="/viagens" element={<RequireAuth><Trips /></RequireAuth>} />
+          <Route
+                path="*"
+                element={<Navigate to="/login" replace={true} />}
+                />
         </Routes>
       </AuthContextProvider>
   </BrowserRouter>
