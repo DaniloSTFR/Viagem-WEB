@@ -1,4 +1,6 @@
 import './App.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
+
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Home } from "./pages/Home";
 import { NewRegister } from "./pages/NewRegister"
