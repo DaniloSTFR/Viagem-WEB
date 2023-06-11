@@ -1,35 +1,34 @@
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+// eslint-disable-next-line
 import { useEffect, useState } from 'react';
 
 import { Modal, Button } from 'react-bootstrap';
-import request from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import { useAuth } from '../hooks/useAuth';
 
 import enfsenior from '../assets/images/enfsenior.svg';
 import falha from '../assets/images/xfalha.svg';
 import '../styles/login.scss';
 import '../styles/modal.scss';
 
-import { firebaseApp, auth, database } from '../services/firebase';
-import { collection, getDocs,} from "firebase/firestore";
-
 interface IFormInputs {
-    usuario: string;
+    email: string;
     senha: string;
   }
   
 const schema = yup.object({
-    usuario: yup.string().required(" *Informe o usuário."),
+    email: yup.string().email("E-mail inválido.").required("Informe o e-mail."),
     senha: yup.string().min(6, " *Informe a senha, ela deve ter ao menos 6 dígitos.").required("Informe a senha.")
   });
 
 export function Login() {
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
-    //const {usuario, signInAction } = useAuth();
+    // eslint-disable-next-line
+    const { user, userInfo, signInAction } = useAuth()
   
     const [showFalha, setShowFalha] = useState(false);
     const handleCloseFalha = () => setShowFalha(false);
@@ -39,35 +38,35 @@ export function Login() {
       resolver: yupResolver(schema)
     });
 
-    const usersCollectionRef = collection(database, "Users");
-
-    useEffect(() => {
-        const getUsers = async () => {
-          const data = await getDocs(usersCollectionRef);
-          console.log(data);
-          //setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-        };
-        getUsers();
-      }, []);
   
 /*     useEffect(() => {
-      if(usuario){
-        //console.log(usuario);
+      if(user){
+        console.log(user);
+        console.log(userInfo);
       }
-    }, [usuario]); */
+    }, [user,userInfo]); */
   
     const loginAction = async (data: IFormInputs) => {
   
       try {
-        //await signInAction(data.usuario, data.senha);
-  
-        history.push('/home');//redirect aqui ou
-      } catch (err) {
-        if (request.isAxiosError(err) && err.response) {
+        const isLogged = await signInAction(data.email, data.senha);
+
+        if (isLogged) {
+          navigate('/home');//redirect aqui ou
+        } else {
+          throw new Error('E-mail ou senha incorretos!')
+        }
+
+      } catch (err:any) {
+        console.log(err.message);
+        setErrorMessage('E-mail ou senha incorretos!');
+        handleShowFalha();
+
+/*         if (request.isAxiosError(err) && err.response) {
           console.log((err.response.data).error);
           setErrorMessage((err.response.data).error);
           handleShowFalha();
-        }
+        } */
       }
   
     };
@@ -91,10 +90,10 @@ export function Login() {
             <div className="row justify-content-md-center" >
               <form onSubmit={handleSubmit(loginAction)}>
                 <div className="form-floating d-grid  mb-3 gap-2 col-xl-4 mx-auto">
-                  <input type="text" className="form-control" id="floatingInput" placeholder="name@example.com"
-                    {...register("usuario", { required: true })} />
-                  <label htmlFor="floatingInput">Usuário</label>
-                  <h5>{errors.usuario?.message}</h5>
+                  <input type="email" className="form-control" id="inputEmail" placeholder="name@example.com"
+                    {...register("email", { required: true })} />
+                  <label htmlFor="inputEmail">Usuário( E-mail )</label>
+                  <h5>{errors.email?.message}</h5>
                 </div>
   
                 <div className="form-floating  d-grid mb-3 gap-2 col-xl-4 mx-auto">

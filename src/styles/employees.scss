@@ -1,0 +1,41 @@
+.setmarginbottom {
+    margin-bottom: 10px !important;
+}
+
+#employees {
+    img {
+        width: 45px;
+        height: 45px
+    }
+    
+    .overflow-scroll {
+        overflow-x: hidden !important;
+    }
+    
+    .list {
+        height: 75vh;
+        max-height: 75vh;
+    }
+    
+    button {
+        width: 10vw;
+        margin: 1rem 1rem 1rem 0;
+    }
+    
+    .card-data {
+        display: flex;
+        flex-direction: row;
+    
+        .buttons {
+            button {
+                display: flex;
+                margin: 0;
+                height: 2rem;
+                width: auto;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+}
+

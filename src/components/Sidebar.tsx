@@ -7,18 +7,15 @@ import {
   CDBSidebarMenu,
   CDBSidebarMenuItem,
 } from 'cdbreact';
-import { NavLink } from 'react-router-dom';
+import {NavLink, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 import '../styles/siderbar.scss'
 
-type SidebarProps = {
-  id: string;
-} 
+export function Sidebar() {
 
-export function Sidebar(props: SidebarProps) {
-
-  console.log(props.id);
-
+    const { pathname } = useLocation();
+    const { signOutAction } = useAuth();
 
   return (
     <div
@@ -37,26 +34,25 @@ export function Sidebar(props: SidebarProps) {
 
         <CDBSidebarContent className="sidebar-content">
           <CDBSidebarMenu>
-            <NavLink  to="/home" className= {` ${props.id==='home'  ? 'activeClicked': '' }`} >
-              <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
+            <NavLink  to="/home" className= {` ${pathname==='/home'  ? 'activeClicked': '' }`} >
+              <CDBSidebarMenuItem icon="warehouse">Dashboard</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink  to="/funcionarios" className= {` ${props.id==='funcionarios'  ? 'activeClicked': '' }`} >
-              <CDBSidebarMenuItem icon="table">Funcionários</CDBSidebarMenuItem>
+            <NavLink  to="/funcionarios" className= {` ${pathname==='/funcionarios'  ? 'activeClicked': '' }`} >
+              <CDBSidebarMenuItem icon="address-card">Funcionários</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink  to="/cargos" className= {` ${props.id==='cargos'  ? 'activeClicked': '' }`} >
-              <CDBSidebarMenuItem icon="user">Cargos</CDBSidebarMenuItem>
+            <NavLink  to="/cargos" className= {` ${pathname==='/cargos'  ? 'activeClicked': '' }`} >
+              <CDBSidebarMenuItem icon="user-plus">Cargos</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink  to="/equipes" className= {` ${props.id==='equipes'  ? 'activeClicked': '' }`} >
-              <CDBSidebarMenuItem icon="user">Equipes</CDBSidebarMenuItem>
+            <NavLink  to="/equipes" className= {` ${pathname==='/equipes'  ? 'activeClicked': '' }`} >
+              <CDBSidebarMenuItem icon="users">Equipes</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink  to="/viagens" className= {` ${props.id==='viagens'  ? 'activeClicked': '' }`} >
-              <CDBSidebarMenuItem icon="chart-line">Viagens</CDBSidebarMenuItem>
+            <NavLink  to="/viagens" className= {` ${pathname==='/viagens'  ? 'activeClicked': '' }`} >
+              <CDBSidebarMenuItem icon="plane">Viagens</CDBSidebarMenuItem>
             </NavLink>
 
             <NavLink
               to="/hero404"
-              target="_blank"
-              className= {` ${props.id==='hero404'  ? 'activeClicked': '' }`} 
+              className= {` ${pathname==='/hero404'  ? 'activeClicked': '' }`} 
             >
               <CDBSidebarMenuItem icon="exclamation-circle">
                 404 page
@@ -69,9 +65,12 @@ export function Sidebar(props: SidebarProps) {
               <div
                 style={{
                   padding: '20px 5px',
+                  textDecoration: 'none',
                 }}
               >
-                Sidebar Footer
+                <NavLink className="nav_link" to="/" onClick={() => signOutAction()}>
+                    <CDBSidebarMenuItem icon="sign-out-alt">Sair</CDBSidebarMenuItem>
+                </NavLink>  
               </div>
             </CDBSidebarFooter>
         </div>

@@ -1,20 +1,23 @@
-import { Sidebar } from "../components/sidebar"
-import { useEffect } from 'react';
+import { Sidebar } from "../components/Sidebar";
+import { useAuth } from '../hooks/useAuth';
+// eslint-disable-next-line
+import { useEffect } from "react";
 
 export function Home() {
+    // eslint-disable-next-line
+    const { user } = useAuth();
 
-    useEffect(() => {
-        const getUsers = async () => {
-          console.log("Home process.env.REACT_APP_API_KEY");
-          console.log(process.env.REACT_APP_API_KEY);
-        };
-        getUsers();
-      }, []);
+/*     useEffect(() => {
+        const checkUser = async () => {
+            console.log(user);
+        }
+        checkUser();
+    }, []); */
 
     return(
         <div id="pages">
             <aside>
-                <Sidebar id = 'home' />
+                <Sidebar/>
             </aside>
             <main className = "content">
                 <h1>Aqui home</h1>
