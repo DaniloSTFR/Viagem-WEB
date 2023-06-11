@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+// eslint-disable-next-line
 import { useEffect, useState } from 'react';
 
 import { Modal, Button } from 'react-bootstrap';
@@ -26,7 +27,8 @@ export function Login() {
 
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
-    const { user, signInAction } = useAuth()
+    // eslint-disable-next-line
+    const { user, userInfo, signInAction } = useAuth()
   
     const [showFalha, setShowFalha] = useState(false);
     const handleCloseFalha = () => setShowFalha(false);
@@ -37,11 +39,12 @@ export function Login() {
     });
 
   
-    useEffect(() => {
+/*     useEffect(() => {
       if(user){
         console.log(user);
+        console.log(userInfo);
       }
-    }, [user]);
+    }, [user,userInfo]); */
   
     const loginAction = async (data: IFormInputs) => {
   

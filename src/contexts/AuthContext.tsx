@@ -2,17 +2,21 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
-import { firebaseApp, auth, database } from '../services/firebase';
+import { auth } from '../services/firebase';
 import { signInWithEmailAndPassword, User, signOut } from "firebase/auth";
-import { collection, getDocs,} from "firebase/firestore";
+
+import { UsersServices } from "../services/UsersServices"; 
+import { Users } from '../types/Users';
 
 
 type AuthContextType = {
   user: User | undefined;
+  userInfo: Users | undefined;
   signInWithGoogle: () => Promise<void>;
   signInAction: (email: string, password: string) => Promise<boolean>;
   signOutAction: () => Promise<void>;
 }
+// eslint-disable-next-line
 interface tokenAuth {
   token: string;
 }
@@ -25,26 +29,35 @@ export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthContextProvider(props: AuthContextProviderProps) {
   const [user, setUser] = useState<User>();
+  const [userInfo, setUserInfo] = useState<Users>();
+  // eslint-disable-next-line
   const [cookiesUuid, setCookiesUuid] = useCookies(['uuidUser']);
   const navigate = useNavigate();
+  const usersServices =  new UsersServices();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
-      console.log(user);
       if (user) {
-        const { email, uid } = user
-
+        const { email, uid } = user;
         if (!email || !uid) {
-          throw new Error('Missing information from Google Account.');
+          throw new Error('Missing information from AuthFirebase.');
         }
 
         setUser(user)
+
+        const userInfoUpsdate = async () => {
+          const usersDate = await usersServices.findUserByUid(uid);
+          setUserInfo(usersDate);
+        }
+        userInfoUpsdate();
+
       }
     })
 
     return () => {
       unsubscribe();
     }
+    // eslint-disable-next-line
   }, [])
 
   async function signInWithGoogle() {
@@ -61,6 +74,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
     }
 
     if (result.user) {
+      // eslint-disable-next-line
       const { displayName, photoURL, uid } = result.user
 
       if (!displayName || !photoURL) {
@@ -83,8 +97,12 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
         throw new Error('Missing information from Google Account.');
       }
       setUser(user);
-
       setCookiesUuid('uuidUser', uid, { path: '/' });
+
+      const usersDate = await usersServices.findUserByUid(uid);
+      setUserInfo(usersDate);
+      console.log(usersDate);
+
       return true;
     }
 
@@ -102,7 +120,7 @@ async function signOutAction() {
   
   
   return (
-    <AuthContext.Provider value={{ user, signInWithGoogle, signInAction, signOutAction }}>
+    <AuthContext.Provider value={{ user, userInfo, signInWithGoogle, signInAction, signOutAction }}>
       {props.children}
     </AuthContext.Provider>
   );

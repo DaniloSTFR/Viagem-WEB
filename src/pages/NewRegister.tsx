@@ -1,15 +1,11 @@
 import { useState } from 'react';
+import { UsersServices } from "../services/UsersServices"; 
 import { Link } from "react-router-dom"
 import { Modal, Button } from 'react-bootstrap';
-
-
-import request from 'axios';
-import { BASE_URL } from '../utils/resquests';
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-
 
 import back from '../assets/images/back.svg';
 import sucess from '../assets/images/vsucesso.svg';
@@ -18,17 +14,16 @@ import '../styles/cadastrar.scss';
 import '../styles/modal.scss';
 
 interface IFormCadastro {
-    nameUser: string;
     nomePessoa: string;
     email: string;
+    cpf: string;
     senha: string;
     senha_confirma: string;
 }
 
 const schema = yup.object({
-
-    nameUser: yup.string().lowercase().required(" *Informe de usuário."),
     nomePessoa: yup.string().required(" *Informe o nome completo."),
+    cpf: yup.string().min(11, " *Informe o CPF válido.").required("*CPF é obrigatorio"),
     email: yup.string().email("E-mail inválido.").required("Informe o e-mail."),
     senha: yup.string().min(6, " *Informe a senha, ela deve ter ao menos 6 dígitos.").required("Informe a senha."),
     senha_confirma: yup.string().oneOf([yup.ref('senha'), ""], "*A senha de confirmação não confere").required("*Repita a senha.")
@@ -51,18 +46,26 @@ export function NewRegister() {
     });
 
     const cadastroAction = async (data: IFormCadastro) => {
-
         try {
-            const response = await request.post(`${BASE_URL}/create/usuarios`, data);
-            console.log(response.data);
+            const usersServices =  new UsersServices();
+            await usersServices.createUser({ 
+                email: data.email, 
+                password: data.senha, 
+                cpf: data.cpf, 
+                fullName: data.nomePessoa, 
+                isAdmin : false, 
+                isActive: true, 
+                position: '', 
+                teams: '', 
+            });
+            //const response = await request.post(`${BASE_URL}/create/usuarios`, data);
+            console.log(data);
             handleShowSucess();
             //history.push('/formulario');//redirect aqui ou
-        } catch (err) {
-            if (request.isAxiosError(err) && err.response) {
-                console.log((err.response.data).error);
-                handleShowFail();
-                //setErrorMessage((err.response?.data).error);
-            }
+        } catch (err:any) {
+            console.log(err.message);
+            handleShowFail();
+            //setErrorMessage((err.response?.data).error);
         }
 
     };
@@ -102,10 +105,10 @@ export function NewRegister() {
                                 <h5>{errors.email?.message}</h5>
                             </div>
                             <div className="col-12">
-                                <label htmlFor="inputUsuario" className="form-label">Usuário</label>
-                                <input type="text" className="form-control" id="inputUsuario"
-                                    {...register("nameUser", { required: true })} />
-                                <h5>{errors.nameUser?.message}</h5>
+                                <label htmlFor="inputCPF" className="form-label">CPF</label>
+                                <input type="number" className="form-control" id="inputCPF"
+                                    {...register("cpf", { required: true })} />
+                                <h5>{errors.cpf?.message}</h5>
                             </div>
                             <div className="col-md-6">
                                 <label htmlFor="inputSenha" className="form-label">Senha</label>
