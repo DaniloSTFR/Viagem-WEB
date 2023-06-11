@@ -1,20 +1,21 @@
-import { Sidebar } from "../components/sidebar"
-import { useEffect } from 'react';
+import { Sidebar } from "../components/Sidebar";
+import { useAuth } from '../hooks/useAuth';
+import { useEffect } from "react";
 
 export function Home() {
+    const { user } = useAuth();
 
     useEffect(() => {
-        const getUsers = async () => {
-          console.log("Home process.env.REACT_APP_API_KEY");
-          console.log(process.env.REACT_APP_API_KEY);
-        };
-        getUsers();
-      }, []);
+        const checkUser = async () => {
+            console.log(user);
+        }
+        checkUser();
+    }, []);
 
     return(
         <div id="pages">
             <aside>
-                <Sidebar id = 'home' />
+                <Sidebar/>
             </aside>
             <main className = "content">
                 <h1>Aqui home</h1>

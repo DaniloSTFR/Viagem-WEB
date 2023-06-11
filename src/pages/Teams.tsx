@@ -1,10 +1,10 @@
-import { Sidebar } from "../components/sidebar"
+import { Sidebar } from "../components/Sidebar";
 
 export function Teams() {
     return(
         <div id="pages">
             <aside>
-                <Sidebar id = 'equipes' />
+                <Sidebar/>
             </aside>
             <main className = "content">
                 <h1>Aqui Equipes</h1>

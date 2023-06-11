@@ -1,7 +1,7 @@
 import EmployeesForms from "../components/employees/employeesForms";
 import EmployeesList from "../components/employees/employeesList";
 import { Modal, Button } from "react-bootstrap";
-import { Sidebar } from "../components/sidebar";
+import { Sidebar } from "../components/Sidebar";
 import { useState } from "react";
 
 export function Employees() {
@@ -12,7 +12,7 @@ export function Employees() {
   return (
     <div id="pages">
       <aside>
-        <Sidebar id="funcionarios" />
+        <Sidebar/>
       </aside>
       <main className="content">
         <div className="flex-column d-flex justify-content-end">

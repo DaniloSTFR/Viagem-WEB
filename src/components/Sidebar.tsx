@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   CDBSidebar,
   CDBSidebarContent,
@@ -7,18 +7,13 @@ import {
   CDBSidebarMenu,
   CDBSidebarMenuItem,
 } from 'cdbreact';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 import '../styles/siderbar.scss'
 
-type SidebarProps = {
-  id: string;
-} 
+export function Sidebar() {
 
-export function Sidebar(props: SidebarProps) {
-
-  console.log(props.id);
-
+    const { pathname } = useLocation();
 
   return (
     <div
@@ -37,26 +32,26 @@ export function Sidebar(props: SidebarProps) {
 
         <CDBSidebarContent className="sidebar-content">
           <CDBSidebarMenu>
-            <NavLink  to="/home" className= {` ${props.id==='home'  ? 'activeClicked': '' }`} >
+            <NavLink  to="/home" className= {` ${pathname==='/home'  ? 'activeClicked': '' }`} >
               <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink  to="/funcionarios" className= {` ${props.id==='funcionarios'  ? 'activeClicked': '' }`} >
+            <NavLink  to="/funcionarios" className= {` ${pathname==='/funcionarios'  ? 'activeClicked': '' }`} >
               <CDBSidebarMenuItem icon="table">Funcionários</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink  to="/cargos" className= {` ${props.id==='cargos'  ? 'activeClicked': '' }`} >
+            <NavLink  to="/cargos" className= {` ${pathname==='/cargos'  ? 'activeClicked': '' }`} >
               <CDBSidebarMenuItem icon="user">Cargos</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink  to="/equipes" className= {` ${props.id==='equipes'  ? 'activeClicked': '' }`} >
+            <NavLink  to="/equipes" className= {` ${pathname==='/equipes'  ? 'activeClicked': '' }`} >
               <CDBSidebarMenuItem icon="user">Equipes</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink  to="/viagens" className= {` ${props.id==='viagens'  ? 'activeClicked': '' }`} >
+            <NavLink  to="/viagens" className= {` ${pathname==='/viagens'  ? 'activeClicked': '' }`} >
               <CDBSidebarMenuItem icon="chart-line">Viagens</CDBSidebarMenuItem>
             </NavLink>
 
             <NavLink
               to="/hero404"
               target="_blank"
-              className= {` ${props.id==='hero404'  ? 'activeClicked': '' }`} 
+              className= {` ${pathname==='/hero404'  ? 'activeClicked': '' }`} 
             >
               <CDBSidebarMenuItem icon="exclamation-circle">
                 404 page

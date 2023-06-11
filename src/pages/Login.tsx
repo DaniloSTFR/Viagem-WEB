@@ -1,4 +1,4 @@
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from 'react';
 
@@ -6,6 +6,7 @@ import { Modal, Button } from 'react-bootstrap';
 import request from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import { useAuth } from '../hooks/useAuth';
 
 import enfsenior from '../assets/images/enfsenior.svg';
 import falha from '../assets/images/xfalha.svg';
@@ -27,9 +28,9 @@ const schema = yup.object({
 
 export function Login() {
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
-    //const {usuario, signInAction } = useAuth();
+    const { user, signInAction } = useAuth()
   
     const [showFalha, setShowFalha] = useState(false);
     const handleCloseFalha = () => setShowFalha(false);
@@ -59,15 +60,24 @@ export function Login() {
     const loginAction = async (data: IFormInputs) => {
   
       try {
-        //await signInAction(data.usuario, data.senha);
-  
-        history.push('/home');//redirect aqui ou
-      } catch (err) {
-        if (request.isAxiosError(err) && err.response) {
+        const isLogged = await signInAction(data.usuario, data.senha);
+
+        if (isLogged) {
+          navigate('/home');//redirect aqui ou
+        } else {
+          throw new Error('E-mail ou senha incorretos!')
+        }
+
+      } catch (err:any) {
+        console.log(err.message);
+        setErrorMessage(err.message);
+        handleShowFalha();
+
+/*         if (request.isAxiosError(err) && err.response) {
           console.log((err.response.data).error);
           setErrorMessage((err.response.data).error);
           handleShowFalha();
-        }
+        } */
       }
   
     };
