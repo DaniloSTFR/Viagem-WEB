@@ -1,10 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import '../../styles/employees.scss'
+import { Modal } from 'react-bootstrap';
+import EmployeesForms from './employeesForms';
 
 const EmployeesCard = ({ receiveData }: any) => {
+    const [show, setShow] = useState({open: false, function: ''});
+
+    const handleClose = () => setShow({open: false, function: ''});
+    const handleShow = () => setShow({open: true, function: 'ATUALIZAR DADOS DE USUARIO'});
     return (
         <>
-            <div className="card" data-toggle="modal" data-target="#exampleModal">
+            <div onClick={handleShow} className="card" data-toggle="modal" data-target="#exampleModal">
                 <div className="card-body">
                     <div className="d-flex align-items-center">
                         <img
@@ -45,6 +51,9 @@ const EmployeesCard = ({ receiveData }: any) => {
                     </div>
                 </div>
             </div>
+            <Modal show={show.open} onHide={handleClose}>
+            <EmployeesForms func={show.function} data={receiveData}/>
+          </Modal>
         </>
     )
 }
