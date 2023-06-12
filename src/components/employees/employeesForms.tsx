@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { Modal } from "react-bootstrap";
+import { Dropdown, DropdownButton, Modal } from "react-bootstrap";
 
 interface IEmployee {
   nome: string;
@@ -14,6 +14,15 @@ interface IEmployee {
   cargo: string;
   senha: string;
 }
+
+const positions = [
+  {
+    id: 1,
+    nomeCargo: 'Master',
+    descricaoCargo: 'master',
+    isAdmPosition: true
+  }
+]
 
 const schema = yup.object({
   nome: yup.string().required("*Informe o nome completo do funcionario"),
@@ -38,7 +47,13 @@ const EmployeesForms = ({ func, data }: any) => {
   });
 
   const handleChange = (event: any) => {
-    setEmployee(event.target.value);
+    if (typeof (event) === 'string') {
+      employee.cargo = event;
+      console.log(employee)
+    } else {
+      setEmployee(event.target.value);
+    }
+
   };
 
   const {
@@ -120,15 +135,21 @@ const EmployeesForms = ({ func, data }: any) => {
             <span className="input-group-text" id="basic-addon1">
               <i className="bi bi-archive"></i>
             </span>
-            <input
-              {...register("cargo")}
-              className="form-control"
-              placeholder="cargo"
-              type="text"
-              onChange={handleChange}
-              value={employee.cargo}
-              required
-            />
+            <DropdownButton
+              title="Cargos"
+              id="dropdown-menu-align-right"
+              onSelect={handleChange}
+              variant="secondary"
+            >
+              {
+                positions.map(pos => {
+                  return (
+                    <Dropdown.Item key={pos.id} eventKey={pos.id} value={pos}>{pos.nomeCargo}</Dropdown.Item>
+                  )
+                })
+              }
+            </DropdownButton>
+
           </div>
           {func === "NOVO USUARIO" ? (
             <div className="input-group mb-3">
