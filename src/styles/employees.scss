@@ -7,25 +7,25 @@
         width: 45px;
         height: 45px
     }
-    
+
     .overflow-scroll {
         overflow-x: hidden !important;
     }
-    
+
     .list {
         height: 75vh;
         max-height: 75vh;
     }
-    
+
     button {
         width: 10vw;
         margin: 1rem 1rem 1rem 0;
     }
-    
+
     .card-data {
         display: flex;
         flex-direction: row;
-    
+
         .buttons {
             button {
                 display: flex;
@@ -39,3 +39,12 @@
     }
 }
 
+#dropdown-menu-align-right {
+    width: 28vw;
+    background: white;
+    color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+}
