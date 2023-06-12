@@ -21,6 +21,7 @@ Company
    - uuid_cargos
    - NomeCargo
    - DescricaoCargo
+   - isAdmPosition
    
 -DiariaViagem
    - uuid_DiariaViagem
@@ -39,6 +40,7 @@ Company
 -Equipe
    - uuid_Equipe
    - NomeEquipe
+   - DescricaoEquipe
    - FuncionariosEquipe[uuid_Usuario] 
    
    
