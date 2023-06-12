@@ -8,8 +8,9 @@ import { Teams } from "./pages/Teams";
 import { Trips } from "./pages/Trips";
 import { Login } from "./pages/Login";
 import { RequireAuth } from './contexts/RequireAuth';
-import { AuthContextProvider } from './contexts/AuthContext'
+import { AuthContextProvider } from './contexts/AuthContext';
 
+import { PageTest } from './pages/PageTest';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cadastrar" element={<NewRegister />} />
+          <Route path="/pagetest" element={<RequireAuth><PageTest /></RequireAuth>} />
           <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
           <Route path="/funcionarios" element={<RequireAuth><Employees /></RequireAuth>} />
           <Route path="/cargos" element={<RequireAuth><Positions /></RequireAuth>} />
