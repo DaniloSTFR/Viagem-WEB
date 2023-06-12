@@ -21,20 +21,20 @@ export function PageTest() {
         const listPositions = await positionsServices.getAllPositions('YTgh3NZ82IikUEnJBr9F')
         console.log(listPositions); */
 
-/*         const oneTeama = await teamsServices.findTeamsByUid('8mGX2YMHaHmol6bVT63i')
+        const oneTeama = await teamsServices.findTeamsByUid('8mGX2YMHaHmol6bVT63i')
         console.log(oneTeama);
 
         const listTeams = await teamsServices.getAllTeams('YTgh3NZ82IikUEnJBr9F')
-        console.log(listTeams); */
+        console.log(listTeams); 
 
         //console.log(listTeams[0].teamEmployees);
-        const newPosition = await positionsServices.createPositions({
+/*         const newPosition = await positionsServices.createPositions({
             namePosition: 'Gerente', 
             descriptionPosition: 'Gerente de setor.',
             isAdmPosition: true,
             company:'YTgh3NZ82IikUEnJBr9F'});
         const onePosition = await positionsServices.findPositionsByUid(newPosition);
-        console.log(onePosition);
+        console.log(onePosition); */
 
       };
 
