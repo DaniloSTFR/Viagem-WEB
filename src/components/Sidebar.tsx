@@ -50,14 +50,10 @@ export function Sidebar() {
               <CDBSidebarMenuItem icon="plane">Viagens</CDBSidebarMenuItem>
             </NavLink>
 
-            <NavLink
-              to="/hero404"
-              className= {` ${pathname==='/hero404'  ? 'activeClicked': '' }`} 
-            >
-              <CDBSidebarMenuItem icon="exclamation-circle">
-                404 page
-              </CDBSidebarMenuItem>
+            <NavLink to="/pagetest" className= {` ${pathname==='/pagetest'  ? 'activeClicked': '' }`} >
+              <CDBSidebarMenuItem icon="exclamation-circle"> PageTest</CDBSidebarMenuItem>
             </NavLink>
+
           </CDBSidebarMenu>
         </CDBSidebarContent>
         <div style={{ textAlign: 'center' }}>

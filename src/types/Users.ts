@@ -4,9 +4,9 @@ export type Users = {
     password?: string, 
     cpf: string, 
     fullName: string, 
-    isAdmin: false,
-    isActive: true,
+    isAdmin: boolean,
+    isActive: boolean,
     position: string | '',
     teams: string | '',
-    companies?: 'YTgh3NZ82IikUEnJBr9F',
+    company?: 'YTgh3NZ82IikUEnJBr9F',
 }
