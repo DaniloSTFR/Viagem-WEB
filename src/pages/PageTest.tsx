@@ -2,6 +2,7 @@ import { Sidebar } from "../components/Sidebar";
 import { UsersServices } from "../services/UsersServices"; 
 import { PositionsServices } from "../services/PositionsServices"; 
 import { TeamsServices } from "../services/TeamsServices"; 
+import { TravelRecordsServices } from "../services/TravelRecordsServices"; 
 import { Button } from "react-bootstrap";
 
 export function PageTest() {
@@ -11,7 +12,8 @@ export function PageTest() {
     const positionsServices =  new PositionsServices();
     // eslint-disable-next-line
     const teamsServices =  new TeamsServices();
-
+    // eslint-disable-next-line
+    const travelRecordsServices =  new TravelRecordsServices();
     
     const testServices = async () => {
 
@@ -21,11 +23,16 @@ export function PageTest() {
         const listPositions = await positionsServices.getAllPositions('YTgh3NZ82IikUEnJBr9F')
         console.log(listPositions); */
 
-        const oneTeama = await teamsServices.findTeamsByUid('8mGX2YMHaHmol6bVT63i')
+/*         const oneTeama = await teamsServices.findTeamsByUid('8mGX2YMHaHmol6bVT63i')
         console.log(oneTeama);
 
         const listTeams = await teamsServices.getAllTeams('YTgh3NZ82IikUEnJBr9F')
-        console.log(listTeams); 
+        console.log(listTeams);  */
+
+        const listTravelRecords = await travelRecordsServices.getAllTravelRecords('YTgh3NZ82IikUEnJBr9F')
+        console.log(listTravelRecords);
+
+
 
         //console.log(listTeams[0].teamEmployees);
 /*         const newPosition = await positionsServices.createPositions({

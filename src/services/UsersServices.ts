@@ -50,6 +50,7 @@ export class UsersServices {
         return data;
     }
 
+    //Precisa de correção dos parametros de insert de acordo com o banco
     async updateUser(uid: string, user: Users) {
         const docRef = doc(this.usersCollectionRef, uid);
         await updateDoc(docRef, user);

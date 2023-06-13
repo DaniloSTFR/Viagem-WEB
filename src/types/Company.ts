@@ -4,6 +4,6 @@ export type Company = {
     cnpj: string, 
     size: string, 
     social_name: boolean,
-    createAt: string, 
-    updatedAt: boolean,
+    createAt: Date, 
+    updatedAt: Date,
 }

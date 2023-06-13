@@ -58,14 +58,22 @@ export class TeamsServices {
         return data as Teams[];
     }
 
+    //Necessario para inserir o uid na coleção, refatorado
     private async updateUidTeams(uid: string) {
       const docRef = doc(this.teamsCollectionRef, uid);
       await updateDoc(docRef, {uid});
     }
 
-    async updateTeams(uid: string, position: Teams) {
+    //Precisa de correção dos parametros de insert de acordo com o banco
+    async updateTeams(uid: string, teams: Teams) {
         const docRef = doc(this.teamsCollectionRef, uid);
-        await updateDoc(docRef, position);
+        await updateDoc(docRef, {
+          nameTeams: teams.nameTeams,
+          descriptionTeams: teams.descriptionTeams,
+          teamEmployees: teams.teamEmployees.length > 0 ? teams.teamEmployees : [],
+          company: teams.company ? teams.company : 'YTgh3NZ82IikUEnJBr9F',
+          uid: uid
+        });
     }
 
     async deleteTeams(uid: string) {
