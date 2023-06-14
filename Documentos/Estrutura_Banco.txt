@@ -21,6 +21,7 @@ Company
    - uuid_cargos
    - NomeCargo
    - DescricaoCargo
+   - isAdmPosition
    
 -DiariaViagem
    - uuid_DiariaViagem
@@ -34,11 +35,12 @@ Company
    - uuid_Locais
    - Pais
    - Estada
-   - Ciadede
+   - Ciadade
 	
 -Equipe
    - uuid_Equipe
    - NomeEquipe
+   - DescricaoEquipe
    - FuncionariosEquipe[uuid_Usuario] 
    
    
