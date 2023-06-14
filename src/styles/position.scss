@@ -1,0 +1,30 @@
+.table {
+  position: relative;
+  max-height: 80vh;
+  min-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: block;
+  text-align: center;
+
+  td {
+    width: auto;
+    min-width: 30vw;
+  }
+}
+.table-wrapper-scroll-y {
+  display: block;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2vw;
+    height: 2vw;
+    margin-bottom: 5px;
+  }
+}
