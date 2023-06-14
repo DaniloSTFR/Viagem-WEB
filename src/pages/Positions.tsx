@@ -9,6 +9,8 @@ export function Positions() {
 
   const handleClose = () => setShow({ open: false, function: "" });
   const handleShow = () => setShow({ open: true, function: "NOVO CARGO" });
+  const [data, setData] = useState<any>({});
+
   return (
     <div id="pages">
       <aside>
@@ -27,7 +29,7 @@ export function Positions() {
           </div>
 
           <Modal centered show={show.open} onHide={handleClose}>
-            <PositionsForms func={show.function} data={null} />
+            <PositionsForms func={show.function} data={data} action='new' />
           </Modal>
 
           <PositionsList />

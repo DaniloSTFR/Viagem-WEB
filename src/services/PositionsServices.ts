@@ -8,11 +8,12 @@ export class PositionsServices {
 
     private positionsCollectionRef = collection(database, "Positions");
 
-    async createPositions({ namePosition, descriptionPosition, isAdmPosition, company}: Positions) {
+    async createPositions({ namePosition, descriptionPosition, isAdmPosition,isActive, company}: Positions) {
         const newPositions = await addDoc(this.positionsCollectionRef, {
           namePosition,
           descriptionPosition,
           isAdmPosition,
+          isActive,
           company: company ? company : 'YTgh3NZ82IikUEnJBr9F',
           uid: ''
         });
@@ -24,6 +25,11 @@ export class PositionsServices {
     async setIsAdmPosition(uid: string, isAdmPosition: boolean) {
         const docRef = doc(this.positionsCollectionRef, uid);
         await updateDoc(docRef, {isAdmPosition: isAdmPosition});
+      }
+
+    async setIsActive(uid: string, isActive: boolean) {
+        const docRef = doc(this.positionsCollectionRef, uid);
+        await updateDoc(docRef, {isAdmPosition: isActive});
       }
 
     async findPositionsByUid(uid: string) {
