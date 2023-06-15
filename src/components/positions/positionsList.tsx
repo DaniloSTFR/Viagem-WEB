@@ -6,11 +6,17 @@ import ConfirmationModal from "../shared/confirmationModal";
 import { PositionsServices } from "../../services/PositionsServices";
 import { Positions } from '../../types/Positions'; 
 
+
+type Props = {
+  refreshComponent: boolean;
+
+}
+
 type PositionsArray = {
   arr: Positions[];
 }
 
-const PositionsList = () => {
+const PositionsList = ({refreshComponent}: Props) => {
   const positionsServices =  new PositionsServices();
 
   const [show, setShow] = useState({ open: '', function: "" });
@@ -30,7 +36,8 @@ const PositionsList = () => {
     }
     getAllPositions();
 // eslint-disable-next-line    
-}, []);
+}, [show,refreshComponent
+]);
 
 
   const handleClose = () => setShow({ open: '', function: "" });
@@ -126,7 +133,7 @@ const PositionsList = () => {
                   />
                 </Modal>
                 <Modal show={show.open === pos.uid} onHide={handleClose}>
-                  <PositionsForms func={show.function} data={pos} action='update'/>
+                  <PositionsForms func={show.function} data={pos} action='update' handleClose={handleClose}/>
                 </Modal>
               </tr>
             );

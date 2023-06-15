@@ -9,14 +9,15 @@ import { Positions } from '../../types/Positions';
 type Props = {
   func: string;
   data: Positions;
-  action: string
+  action: string;
+  handleClose : Function;
 }
 
 interface IFormPosition {
   namePosition: string;
   descriptionPosition: string;
-  isAdmPosition: Boolean;
-  isActive: Boolean;
+  isAdmPosition: boolean;
+  isActive: boolean;
 }
 
 const schema = yup.object({
@@ -26,7 +27,7 @@ const schema = yup.object({
   isActive: yup.boolean(),
 });
 
-const PositionsForms = ({ func, data, action}: Props) => {
+const PositionsForms = ({ func, data, action, handleClose}: Props) => {
   const positionsServices =  new PositionsServices();
   
   const [position, setPosition] = useState<Positions>({
@@ -39,7 +40,15 @@ const PositionsForms = ({ func, data, action}: Props) => {
   });
 
   const handleChange = (event: any) => {
-    setPosition(event.target.value);
+    setPosition({
+      uid: position.uid,
+      namePosition: event.target.name === 'namePosition' ? event.target.value : position.namePosition, 
+      descriptionPosition: event.target.name === 'descriptionPosition' ? event.target.value : position.descriptionPosition, 
+      isAdmPosition: event.target.name === 'isAdmPosition' ?  !position.isAdmPosition : position.isAdmPosition,
+      isActive: event.target.name === 'isActive' ? !position.isActive : position.isActive,
+      company: position.company,
+    });
+    
   };
 
   const {
@@ -50,11 +59,30 @@ const PositionsForms = ({ func, data, action}: Props) => {
   } = useForm<IFormPosition>({
     resolver: yupResolver(schema),
   });
-  const onSubmitHandler = async (upData: IFormPosition) => {
-    console.log({ upData });
-    reset();
+  const onSubmitHandler = async (positionData: IFormPosition) => {
+    console.log({ positionData });
+
+    try {
+      if (action === 'new') {
+        const uidNewPosition = await positionsServices.createPositions(
+          {
+            namePosition: positionData.namePosition,
+            descriptionPosition: positionData.descriptionPosition,
+            isAdmPosition: positionData.isAdmPosition,
+            isActive: positionData.isActive,
+            company: position.company
+          });
+        reset();
+        if(uidNewPosition) handleClose();
+      }
+
+      
+    } catch (err: any) {
+      console.log(err.message);
+    }
   };
 
+  //console.log(position);
   return (
     <>
       <Modal.Header closeButton>
@@ -69,12 +97,12 @@ const PositionsForms = ({ func, data, action}: Props) => {
             <input
               className="form-control"
               {...register("namePosition")}
-              placeholder="nome do cargo"
+              placeholder="Nome do cargo"
               type="text"
               onChange={handleChange}
               value={position.namePosition}
               required
-            />
+            /><h5>{errors.namePosition?.message}</h5>
           </div>
           <div className="input-group mb-3">
             <span className="input-group-text" id="basic-addon1">

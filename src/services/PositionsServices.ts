@@ -42,7 +42,7 @@ export class PositionsServices {
     async getAllPositions(company: string){
         let data: Positions[] = [];
 
-        (await getDocs(query(this.positionsCollectionRef, where('company', '==', company)))).forEach((docs: any) => {
+        (await getDocs(query(this.positionsCollectionRef, where('company', '==', company), orderBy("namePosition", "asc"),))).forEach((docs: any) => {
           data.push(docs.data() as Positions);
         });
         return data;
