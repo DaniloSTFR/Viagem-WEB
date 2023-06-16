@@ -3,5 +3,6 @@ export type Positions = {
     namePosition: string, 
     descriptionPosition: string, 
     isAdmPosition: boolean,
+    isActive: boolean,
     company: string,
 }

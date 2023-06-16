@@ -8,11 +8,12 @@ export class PositionsServices {
 
     private positionsCollectionRef = collection(database, "Positions");
 
-    async createPositions({ namePosition, descriptionPosition, isAdmPosition, company}: Positions) {
+    async createPositions({ namePosition, descriptionPosition, isAdmPosition,isActive, company}: Positions) {
         const newPositions = await addDoc(this.positionsCollectionRef, {
           namePosition,
           descriptionPosition,
           isAdmPosition,
+          isActive,
           company: company ? company : 'YTgh3NZ82IikUEnJBr9F',
           uid: ''
         });
@@ -26,6 +27,11 @@ export class PositionsServices {
         await updateDoc(docRef, {isAdmPosition: isAdmPosition});
       }
 
+    async setIsActive(uid: string, isActive: boolean) {
+        const docRef = doc(this.positionsCollectionRef, uid);
+        await updateDoc(docRef, {isAdmPosition: isActive});
+      }
+
     async findPositionsByUid(uid: string) {
         const docRef = doc(this.positionsCollectionRef, uid)
         const docSnap = await getDoc(docRef);
@@ -36,7 +42,7 @@ export class PositionsServices {
     async getAllPositions(company: string){
         let data: Positions[] = [];
 
-        (await getDocs(query(this.positionsCollectionRef, where('company', '==', company)))).forEach((docs: any) => {
+        (await getDocs(query(this.positionsCollectionRef, where('company', '==', company), orderBy("namePosition", "asc"),))).forEach((docs: any) => {
           data.push(docs.data() as Positions);
         });
         return data;

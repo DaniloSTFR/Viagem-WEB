@@ -1,19 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/position.scss";
 import { Button, Modal } from "react-bootstrap";
 import PositionsForms from "./positionsForms";
 import ConfirmationModal from "../shared/confirmationModal";
-const PositionsList = () => {
-  const [show, setShow] = useState({ open: false, function: "" });
-  const [data, setData] = useState("");
+import { PositionsServices } from "../../services/PositionsServices";
+import { Positions } from '../../types/Positions'; 
+
+
+type Props = {
+  refreshComponent: boolean;
+
+}
+
+type PositionsArray = {
+  arr: Positions[];
+}
+
+const PositionsList = ({refreshComponent}: Props) => {
+  const positionsServices =  new PositionsServices();
+
+  const [show, setShow] = useState({ open: '', function: "" });
+  const [data, setData] = useState<any>({});
+  const [positions, setPositions] = useState<PositionsArray>({arr: []});
   const [response, setResponse] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [isActive, setIsActive] = useState(false);
 
-  const handleClose = () => setShow({ open: false, function: "" });
+  useEffect(() => {
+    async function getAllPositions(){
+
+      const responsefirebase = await positionsServices.getAllPositions('YTgh3NZ82IikUEnJBr9F');
+      setPositions({arr:responsefirebase});
+      console.log(responsefirebase);
+
+    }
+    getAllPositions();
+// eslint-disable-next-line    
+}, [show,refreshComponent
+]);
+
+
+  const handleClose = () => setShow({ open: '', function: "" });
   const handleShow = (e: any) => {
     setData(e);
-    setShow({ open: true, function: "ATUALIZAR DADOS DO CARGO" });
+    setShow({ open: e.uid, function: "ATUALIZAR DADOS DO CARGO" });
   };
   const handleCloseAlert = () => setShowAlert(false);
   const handleShowAlert = (isActive: boolean) => {
@@ -30,30 +60,6 @@ const PositionsList = () => {
     handleCloseAlert();
   };
 
-  const positions = [
-    {
-      id: 1,
-      nomeCargo: "TI",
-      descricaoCargo: "Cargo de TI",
-      isAdmPosition: false,
-      isActive: true,
-    },
-    {
-      id: 2,
-      nomeCargo: "RH",
-      descricaoCargo: "Cargo de RH",
-      isAdmPosition: false,
-      isActive: false,
-    },
-    {
-      id: 3,
-      nomeCargo: "Administrador",
-      descricaoCargo: "Cargo de ADMIN",
-      isAdmPosition: true,
-      isActive: true,
-    },
-  ];
-
   return (
     <>
       <table className="table table-bordered table-striped mb-0">
@@ -67,12 +73,12 @@ const PositionsList = () => {
           </tr>
         </thead>
         <tbody>
-          {positions.map((pos, index) => {
+          {positions.arr.map((pos, index) => {
             return (
-              <tr key={pos.id}>
+              <tr key={pos.uid}>
                 <th scope="row">{index}</th>
-                <td>{pos.nomeCargo}</td>
-                <td>{pos.descricaoCargo}</td>
+                <td>{pos.namePosition}</td>
+                <td>{pos.descriptionPosition}</td>
                 <th>
                   <input
                     disabled
@@ -126,8 +132,8 @@ const PositionsList = () => {
                     handleAlertResponse={handleAlertResponse}
                   />
                 </Modal>
-                <Modal show={show.open} onHide={handleClose}>
-                  <PositionsForms func={show.function} data={data} />
+                <Modal show={show.open === pos.uid} onHide={handleClose}>
+                  <PositionsForms func={show.function} data={pos} action='update' handleClose={handleClose}/>
                 </Modal>
               </tr>
             );

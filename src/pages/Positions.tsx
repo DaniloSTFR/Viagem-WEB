@@ -7,8 +7,12 @@ import PositionsForms from "../components/positions/positionsForms";
 export function Positions() {
   const [show, setShow] = useState({ open: false, function: "" });
 
-  const handleClose = () => setShow({ open: false, function: "" });
+  const handleClose = () => {setShow({ open: false, function: "" }); 
+                             setRefreshComponent(!refreshComponent);};
   const handleShow = () => setShow({ open: true, function: "NOVO CARGO" });
+  const [data, setData] = useState<any>({});
+  const [refreshComponent, setRefreshComponent] = useState(false);
+
   return (
     <div id="pages">
       <aside>
@@ -27,10 +31,10 @@ export function Positions() {
           </div>
 
           <Modal centered show={show.open} onHide={handleClose}>
-            <PositionsForms func={show.function} data={null} />
+            <PositionsForms func={show.function} data={data} action='new' handleClose={handleClose}/>
           </Modal>
 
-          <PositionsList />
+          <PositionsList refreshComponent = {refreshComponent}/>
         </div>
       </main>
     </div>
