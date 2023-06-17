@@ -34,7 +34,7 @@ export function Positions() {
             <PositionsForms func={show.function} data={data} action='new' handleClose={handleClose}/>
           </Modal>
 
-          <PositionsList refreshComponent = {refreshComponent}/>
+          <PositionsList refreshComponent = {refreshComponent} setRefreshComponent ={setRefreshComponent}/>
         </div>
       </main>
     </div>

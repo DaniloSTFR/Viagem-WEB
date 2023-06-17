@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../../styles/position.scss";
 import { Button, Modal } from "react-bootstrap";
 import PositionsForms from "./positionsForms";
@@ -9,54 +9,66 @@ import { Positions } from '../../types/Positions';
 
 type Props = {
   refreshComponent: boolean;
-
+  setRefreshComponent: Function;
 }
 
 type PositionsArray = {
   arr: Positions[];
 }
 
-const PositionsList = ({refreshComponent}: Props) => {
+const PositionsList = ({refreshComponent, setRefreshComponent}: Props) => {
   const positionsServices =  new PositionsServices();
-
   const [show, setShow] = useState({ open: '', function: "" });
-  const [data, setData] = useState<any>({});
   const [positions, setPositions] = useState<PositionsArray>({arr: []});
-  const [response, setResponse] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+  const [showAlert, setShowAlert] = useState({ open: '', text: '', handleFunctionAlertResponse: Function});
 
   useEffect(() => {
     async function getAllPositions(){
-
-      const responsefirebase = await positionsServices.getAllPositions('YTgh3NZ82IikUEnJBr9F');
-      setPositions({arr:responsefirebase});
-      console.log(responsefirebase);
-
+      try{
+        const responsefirebase = await positionsServices.getAllPositions('YTgh3NZ82IikUEnJBr9F');
+        setPositions({arr:responsefirebase});
+      } catch (err: any) {
+        console.log(err.message);
+      }
     }
     getAllPositions();
 // eslint-disable-next-line    
-}, [show,refreshComponent
-]);
-
+}, [show, refreshComponent]);
 
   const handleClose = () => setShow({ open: '', function: "" });
   const handleShow = (e: any) => {
-    setData(e);
     setShow({ open: e.uid, function: "ATUALIZAR DADOS DO CARGO" });
   };
-  const handleCloseAlert = () => setShowAlert(false);
-  const handleShowAlert = (isActive: boolean) => {
-    setIsActive(isActive);
-    setShowAlert(true);
+
+  const handleCloseAlert = () => {
+    setShowAlert({  open: '', text: '', handleFunctionAlertResponse: Function});
+    setRefreshComponent(!refreshComponent);
   };
 
-  const handleIsActive = (data: any) => {
-    setIsActive(data);
+  const handleShowAlert = (pos:Positions, text:string, handleFunctionAlertResponse:any) => {
+    setShowAlert({ open: pos.uid?pos.uid:'', text, handleFunctionAlertResponse});
   };
 
-  const handleAlertResponse = (res: boolean) => {
-    setResponse(res);
+  const handleAlertResponseToSetPositionState = async (res: boolean,uid: string, state:boolean) => {
+   
+    if(res){
+      try{
+        await positionsServices.setIsActive(uid, !state);
+      } catch (err: any) {
+        console.log(err.message);
+      }
+    }
+    handleCloseAlert();
+  };
+
+  const handleAlertResponseDeletePosition = async (res: boolean, uid: string, state:boolean) => {
+    if(res){
+      try{
+        await positionsServices.deletePositions(uid);
+      } catch (err: any) {
+        console.log(err.message);
+      }
+    }
     handleCloseAlert();
   };
 
@@ -103,10 +115,10 @@ const PositionsList = ({refreshComponent}: Props) => {
                     >
                       <i className="bi bi-pencil"></i>
                     </Button>
-                    {pos.isActive ? (
+                    {!pos.isActive ? (
                       <Button
                         onClick={() => {
-                          handleShowAlert(pos.isActive);
+                          handleShowAlert(pos, 'Deseja realmente reativar o cargo?', handleAlertResponseToSetPositionState);
                         }}
                         variant="success"
                         size="sm"
@@ -116,7 +128,7 @@ const PositionsList = ({refreshComponent}: Props) => {
                     ) : (
                       <Button
                         onClick={() => {
-                          handleShowAlert(pos.isActive);
+                          handleShowAlert(pos, 'Deseja realmente desativar o cargo?', handleAlertResponseToSetPositionState);
                         }}
                         variant="danger"
                         size="sm"
@@ -124,12 +136,23 @@ const PositionsList = ({refreshComponent}: Props) => {
                         <i className="bi bi-x-lg"></i>
                       </Button>
                     )}
+
+                    <Button
+                      onClick={() => {
+                        handleShowAlert(pos, 'Deseja realmente excluir o cargo?', handleAlertResponseDeletePosition);
+                      }}
+                      variant="outline-danger"
+                    >
+                      <i className="bi bi-trash"></i>
+                    </Button>
                   </div>
                 </th>
-                <Modal show={showAlert} onHide={handleCloseAlert}>
+                <Modal show={showAlert.open === pos.uid} onHide={handleCloseAlert}>
                   <ConfirmationModal
-                    isActive={isActive}
-                    handleAlertResponse={handleAlertResponse}
+                    handleFunctionAlertResponse={showAlert.handleFunctionAlertResponse}
+                    uid={pos.uid}
+                    state={pos.isActive}
+                    alertText={showAlert.text}
                   />
                 </Modal>
                 <Modal show={show.open === pos.uid} onHide={handleClose}>

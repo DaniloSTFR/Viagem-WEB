@@ -27,9 +27,10 @@ export class PositionsServices {
         await updateDoc(docRef, {isAdmPosition: isAdmPosition});
       }
 
-    async setIsActive(uid: string, isActive: boolean) {
+    async setIsActive(uid: string = '', isActive: boolean) {
+        console.log(uid);
         const docRef = doc(this.positionsCollectionRef, uid);
-        await updateDoc(docRef, {isAdmPosition: isActive});
+        await updateDoc(docRef, {isActive});
       }
 
     async findPositionsByUid(uid: string) {
@@ -55,12 +56,12 @@ export class PositionsServices {
     }
     
     //Precisa de correção dos parametros de insert de acordo com o banco
-    async updatePositions(uid: string, position: Positions) {
+    async updatePositions(uid: string = '' , position: Positions) {
         const docRef = doc(this.positionsCollectionRef, uid);
         await updateDoc(docRef, position);
     }
 
-    async deletePositions(uid: string) {
+    async deletePositions(uid: string = '') {
       const docRef = doc(this.positionsCollectionRef, uid);
       await deleteDoc(docRef);
     }

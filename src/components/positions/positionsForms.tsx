@@ -74,6 +74,9 @@ const PositionsForms = ({ func, data, action, handleClose}: Props) => {
           });
         reset();
         if(uidNewPosition) handleClose();
+      }else if(action === 'update'){
+        await positionsServices.updatePositions(position.uid, position);
+        handleClose();
       }
 
       
@@ -157,9 +160,8 @@ const PositionsForms = ({ func, data, action, handleClose}: Props) => {
               placeholder="Ativo"
             />
           </div>
-
-          <button type="submit" className="btn btn-success">
-            Cadastrar
+          <button type="submit" className= { action === 'new' ? 'btn btn-success' : 'btn btn-primary'}>
+            { action === 'new' ? 'Cadastrar' : 'Atualizar'}
           </button>
         </form>
       </Modal.Body>
