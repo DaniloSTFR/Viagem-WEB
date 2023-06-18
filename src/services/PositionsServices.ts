@@ -1,8 +1,8 @@
 import { Positions } from '../types/Positions';
 // eslint-disable-next-line
-import { firebaseApp, auth, database } from './firebase';
+import { database } from './firebase';
 // eslint-disable-next-line
-import { addDoc, collection, doc, deleteDoc,  getDocs, getDoc, orderBy, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, deleteDoc,  getDocs, getDoc, orderBy, query, updateDoc, where } from "firebase/firestore";
 
 export class PositionsServices {
 
@@ -28,7 +28,6 @@ export class PositionsServices {
       }
 
     async setIsActive(uid: string = '', isActive: boolean) {
-        console.log(uid);
         const docRef = doc(this.positionsCollectionRef, uid);
         await updateDoc(docRef, {isActive});
       }

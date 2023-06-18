@@ -5,10 +5,12 @@ import { firebaseApp, auth, database } from '../services/firebase';
 import { User, createUserWithEmailAndPassword } from "firebase/auth";
 // eslint-disable-next-line
 import { addDoc, collection, doc, deleteDoc, Firestore, getDocs, getDoc, getFirestore, orderBy, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { PositionsServices } from "./PositionsServices";
 
 export class UsersServices {
 
     private usersCollectionRef = collection(database, "Users");
+    private positionsServices =  new PositionsServices();
 
     async createUser({ email, password, cpf, fullName, isAdmin, isActive, position, teams, company }: Users) {
         const defaultPass = String(cpf).slice(0, 8);
@@ -38,14 +40,21 @@ export class UsersServices {
         const docRef = doc(this.usersCollectionRef, uid)
         const docSnap = await getDoc(docRef);
         const user = docSnap.data() as Users;
+        if(user.position!==''){
+            user.positionData = await this.positionsServices.findPositionsByUid(user.position);
+        }
         return user;
     }
 
     async getAllUser(company: string){
         let data: Users[] = [];
 
-        (await getDocs(query(this.usersCollectionRef, where('company', '==', company)))).forEach((docs: any) => {
-          data.push(docs.data() as Users);
+        (await getDocs(query(this.usersCollectionRef, where('company', '==', company)))).forEach(async (docs: any) => {
+            const user = docs.data() as Users;
+            if(user.position!==''){
+                user.positionData = await this.positionsServices.findPositionsByUid(user.position);
+            }
+          data.push(user);
         });
         return data;
     }

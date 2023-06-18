@@ -78,9 +78,9 @@ const PositionsList = ({refreshComponent, setRefreshComponent}: Props) => {
         <thead className="sticky-top">
           <tr>
             <th scope="col"></th>
-            <th scope="col">NomeCargo</th>
-            <th scope="col">DescricaoCargo</th>
-            <th scope="col">Admin</th>
+            <th scope="col">Nome do Cargo</th>
+            <th scope="col">Descrição do Cargo</th>
+            <th scope="col">Admin.</th>
             <th scope="col">Ativo</th>
           </tr>
         </thead>
@@ -88,7 +88,7 @@ const PositionsList = ({refreshComponent, setRefreshComponent}: Props) => {
           {positions.arr.map((pos, index) => {
             return (
               <tr key={pos.uid}>
-                <th scope="row">{index}</th>
+                <th scope="row">{index+1}</th>
                 <td>{pos.namePosition}</td>
                 <td>{pos.descriptionPosition}</td>
                 <th>

@@ -11,13 +11,14 @@ export class TeamsServices {
     private teamsCollectionRef = collection(database, "Teams");
     private usersServices =  new UsersServices();
 
-    async createTeams({ nameTeams, descriptionTeams, teamEmployees=[], company}: Teams) {
+    async createTeams({ nameTeams, descriptionTeams, teamEmployees=[], isActive, company}: Teams) {
         const newTeams = await addDoc(this.teamsCollectionRef, {
           nameTeams,
           descriptionTeams,
           teamEmployees: teamEmployees.length > 0 ? teamEmployees : [],
           company: company ? company : 'YTgh3NZ82IikUEnJBr9F',
-          uid: ''
+          uid: '',
+          isActive
         });
         await this.updateUidTeams(newTeams.id);
 
@@ -65,13 +66,14 @@ export class TeamsServices {
     }
 
     //Precisa de correção dos parametros de insert de acordo com o banco
-    async updateTeams(uid: string, teams: Teams) {
+    async updateTeams(uid: string = '' , teams: Teams) {
         const docRef = doc(this.teamsCollectionRef, uid);
         await updateDoc(docRef, {
           nameTeams: teams.nameTeams,
           descriptionTeams: teams.descriptionTeams,
           teamEmployees: teams.teamEmployees.length > 0 ? teams.teamEmployees : [],
           company: teams.company ? teams.company : 'YTgh3NZ82IikUEnJBr9F',
+          isActive: teams.isActive,
           uid: uid
         });
     }
@@ -79,6 +81,11 @@ export class TeamsServices {
     async deleteTeams(uid: string) {
       const docRef = doc(this.teamsCollectionRef, uid);
       await deleteDoc(docRef);
+    }
+
+    async setIsActive(uid: string = '', isActive: boolean) {
+      const docRef = doc(this.teamsCollectionRef, uid);
+      await updateDoc(docRef, {isActive});
     }
 
 }

@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -48,7 +48,6 @@ const PositionsForms = ({ func, data, action, handleClose}: Props) => {
       isActive: event.target.name === 'isActive' ? !position.isActive : position.isActive,
       company: position.company,
     });
-    
   };
 
   const {
@@ -60,8 +59,6 @@ const PositionsForms = ({ func, data, action, handleClose}: Props) => {
     resolver: yupResolver(schema),
   });
   const onSubmitHandler = async (positionData: IFormPosition) => {
-    console.log({ positionData });
-
     try {
       if (action === 'new') {
         const uidNewPosition = await positionsServices.createPositions(
@@ -77,9 +74,7 @@ const PositionsForms = ({ func, data, action, handleClose}: Props) => {
       }else if(action === 'update'){
         await positionsServices.updatePositions(position.uid, position);
         handleClose();
-      }
-
-      
+      }     
     } catch (err: any) {
       console.log(err.message);
     }

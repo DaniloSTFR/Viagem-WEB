@@ -8,4 +8,5 @@ export type Teams = {
     teamEmployeesUsers?: Users[],
     teamEmployees: string[];
     company: string,
+    isActive: boolean,
 }

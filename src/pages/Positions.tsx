@@ -10,8 +10,8 @@ export function Positions() {
   const handleClose = () => {setShow({ open: false, function: "" }); 
                              setRefreshComponent(!refreshComponent);};
   const handleShow = () => setShow({ open: true, function: "NOVO CARGO" });
-  const [data, setData] = useState<any>({});
   const [refreshComponent, setRefreshComponent] = useState(false);
+  let data:any;
 
   return (
     <div id="pages">
