@@ -5,7 +5,7 @@ import { NewRegister } from "./pages/NewRegister"
 import { Employees } from "./pages/Employees";
 import { Positions } from "./pages/Positions";
 import { Teams } from "./pages/Teams";
-import { Trips } from "./pages/Trips";
+import { TravelRecords } from "./pages/TravelRecords";
 import { Login } from "./pages/Login";
 import { RequireAuth } from './contexts/RequireAuth';
 import { AuthContextProvider } from './contexts/AuthContext';
@@ -25,7 +25,7 @@ function App() {
           <Route path="/funcionarios" element={<RequireAuth><Employees /></RequireAuth>} />
           <Route path="/cargos" element={<RequireAuth><Positions /></RequireAuth>} />
           <Route path="/equipes" element={<RequireAuth><Teams /></RequireAuth>} />
-          <Route path="/viagens" element={<RequireAuth><Trips /></RequireAuth>} />
+          <Route path="/viagens" element={<RequireAuth><TravelRecords /></RequireAuth>} />
           <Route
                 path="*"
                 element={<Navigate to="/login" replace={true} />}
