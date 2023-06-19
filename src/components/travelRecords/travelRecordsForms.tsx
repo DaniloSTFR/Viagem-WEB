@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState} from "react";
+import { useState, useEffect} from "react";
 // eslint-disable-next-line
 import { Dropdown, DropdownButton, Modal, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
@@ -7,9 +7,10 @@ import "../../styles/teams.scss";
 import * as yup from "yup";
 import { TravelRecordsServices } from "../../services/TravelRecordsServices";
 import { LocationsServices } from "../../services/LocationsServices";
-
+import { TeamsServices } from "../../services/TeamsServices";
 import { TravelRecords } from '../../types/TravelRecords'; 
 import { Locations } from '../../types/Locations'; 
+import { Teams } from "../../types/Teams";
 import { locales } from "moment";
 import DateInput from "../shared/DateInput";
 import "react-datepicker/dist/react-datepicker.css";
@@ -31,6 +32,10 @@ interface IFormTravelRecords{
   city: string;
   travelEmployees: string[];
 }
+
+type TeamsArray = {
+  arr: Teams[];
+};
 
 const statesBrazil = [
   {uf:'AC', nameUF: 'Acre'},
@@ -76,7 +81,7 @@ const schema = yup.object({
 const TravelRecordsForms = ({ func, data, action, handleClose}: Props) => {
   const travelRecordsServices =  new TravelRecordsServices();
   const locationsServices =  new LocationsServices();
-  //const teamsServices =  new TravelRecordsServices();
+  const teamsServices = new TeamsServices();
 
   const [travelRecords, setTravelRecords] = useState<TravelRecords>({
     uid: action === 'update' ? data.uid : '',
@@ -90,7 +95,7 @@ const TravelRecordsForms = ({ func, data, action, handleClose}: Props) => {
     departureDate: action === 'update' ? data.departureDate : new Date(),
     company: action === 'update' ? data.company : 'YTgh3NZ82IikUEnJBr9F',
   });
-
+  const [teams, setTeams] = useState<TeamsArray>({ arr: [] });
   const [travelEmployeesUsers, setTravelEmployeesUsers] = useState<any>(action === 'update' ? data.travelEmployeesUsers : []);
   const [arrivalDate, setArrivalDateDate] = useState<ValuePiece>(action === 'update' ? data.arrivalDate : new Date());
   const [departureDate, setDepartureDate] = useState<ValuePiece>(action === 'update' ? data.departureDate : new Date());
@@ -103,6 +108,18 @@ const TravelRecordsForms = ({ func, data, action, handleClose}: Props) => {
         company: action === 'update' ? data.team : 'YTgh3NZ82IikUEnJBr9F',
   });
 
+  useEffect(() => {
+    async function getAllTeams() {
+      try {
+        const responsefirebase = await teamsServices.getAllTeams('YTgh3NZ82IikUEnJBr9F');
+        setTeams({ arr: responsefirebase });
+      } catch (err: any) {
+        console.log(err.message);
+      }
+    }
+    getAllTeams();
+    // eslint-disable-next-line    
+  }, [travelRecords.team]);
 
 
   // eslint-disable-next-line
@@ -194,47 +211,47 @@ const TravelRecordsForms = ({ func, data, action, handleClose}: Props) => {
       }
     };
   
-    return (
-      <>
-        <Modal.Header closeButton>
-          <Modal.Title>{func}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form id='form-teams' onSubmit={handleSubmit(onSubmitHandler)}>
+  return (
+    <>
+      <Modal.Header closeButton>
+        <Modal.Title>{func}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <form id='form-teams' onSubmit={handleSubmit(onSubmitHandler)}>
 
 
 
-            <div className="input-group mb-3">
-              <span className="input-group-text" id="basic-addon1">
-                Ida:
-              </span>
-                  <DateInput
-                      value={departureDate}
-                      startdate={departureDate}
-                      onChange={handleDepartureDate}
-                      id="departureDate"
-                      name="departureDate"
-                      type="date"
-                      className="form-control"
-                  />
-            </div>
+          <div className="input-group mb-3">
+            <span className="input-group-text" id="basic-addon1">
+              Ida:
+            </span>
+            <DateInput
+              value={departureDate}
+              startdate={departureDate}
+              onChange={handleDepartureDate}
+              id="departureDate"
+              name="departureDate"
+              type="date"
+              className="form-control"
+            />
+          </div>
 
-            <div className="input-group mb-3">
-              <span className="input-group-text" id="basic-addon1">
-                Volta:
-              </span>
-                  <DateInput
-                      value={arrivalDate}
-                      startdate={arrivalDate}
-                      onChange={handleArrivalDate}
-                      id="departureDate"
-                      name="departureDate"
-                      type="date"
-                      className="form-control"
-                  />
-            </div>
+          <div className="input-group mb-3">
+            <span className="input-group-text" id="basic-addon1">
+              Volta:
+            </span>
+            <DateInput
+              value={arrivalDate}
+              startdate={arrivalDate}
+              onChange={handleArrivalDate}
+              id="departureDate"
+              name="departureDate"
+              type="date"
+              className="form-control"
+            />
+          </div>
 
-            <div className="input-group mb-3">
+          <div className="input-group mb-3">
             <span className="input-group-text" id="basic-addon1">
               <i className="bi bi-archive"></i>
             </span>
@@ -255,20 +272,42 @@ const TravelRecordsForms = ({ func, data, action, handleClose}: Props) => {
             </Form.Select>
           </div>
           <div className="input-group mb-3">
-              <span className="input-group-text" id="basic-addon1">
-                <i className="bi bi-file-person"></i>
-              </span>
-              <input
-                className="form-control"
-                {...register("city")}
-                placeholder="Cidade"
-                type="text"
-                onChange={handleChange}
-                value={locationData.city}
-                required
-              />
-            </div>
-{/*             <div className="input-group mb-3">
+            <span className="input-group-text" id="basic-addon1">
+              <i className="bi bi-file-person"></i>
+            </span>
+            <input
+              className="form-control"
+              {...register("city")}
+              placeholder="Cidade"
+              type="text"
+              onChange={handleChange}
+              value={locationData.city}
+              required
+            />
+          </div>
+
+          <div className="input-group mb-3">
+            <span className="input-group-text" id="basic-addon1">
+              <i className="bi bi-archive"></i>
+            </span>
+            <Form.Select
+              {...register("team")}
+              onChange={handleChange}
+              aria-label="Cargo"
+              value={travelRecords.team}
+            >
+              <option>Selecione a equipe</option>
+              {teams.arr.map((tm) => {
+                return (
+                  <option key={tm.uid} value={tm.uid}  >
+                    {tm.nameTeams}
+                  </option>
+                );
+              })}
+            </Form.Select>
+          </div>
+
+         {/*             <div className="input-group mb-3">
               <span className="input-group-text" id="basic-addon1">
                 <i className="bi bi-file-person"></i>
               </span>
@@ -302,44 +341,44 @@ const TravelRecordsForms = ({ func, data, action, handleClose}: Props) => {
               />
             </div> */}
 
-            {action === 'update' ? 
-                <table className="table table-form table-bordered table-striped mb-0">
-                  <thead className="sticky-top">
-                    <tr>
-                      <th scope="col"></th>
-                      <th scope="col">NomeFuncionario</th>
-                      <th scope="col">Cargo</th>
-                      <th scope="col">Presente na<br/>Viagem</th>
+          {action === 'update' ?
+            <table className="table table-form table-bordered table-striped mb-0">
+              <thead className="sticky-top">
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">NomeFuncionario</th>
+                  <th scope="col">Cargo</th>
+                  <th scope="col">Presente na<br />Viagem</th>
+                </tr>
+              </thead>
+              <tbody>
+                {travelEmployeesUsers.map((employees: any, index: any) => {
+                  return (
+                    <tr key={employees.uid}>
+                      <th scope="row">{index + 1}</th>
+                      <td>{employees.simpleName}</td>
+                      <td>{employees.positionData ? employees.positionData.namePosition : 'Não definido'}</td>
+                      <th>
+                        <input
+                          disabled
+                          type="checkbox"
+                          checked={employees.isActive}
+                        ></input>
+                      </th>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {travelEmployeesUsers.map((employees: any, index: any) => {
-                      return (
-                          <tr key={employees.uid}>
-                            <th scope="row">{index+1}</th>
-                            <td>{employees.fullName}</td>
-                            <td>{employees.positionData? employees.positionData.namePosition: 'Não definido'}</td>
-                            <th>
-                              <input
-                                disabled
-                                type="checkbox"
-                                checked={employees.isActive}
-                              ></input>
-                            </th>
-                          </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                  );
+                })}
+              </tbody>
+            </table>
             : ''}
 
-            <button type="submit" className= { action === 'new' ? 'btn btn-success ' : 'btn btn-primary'}>
-              { action === 'new' ? 'Cadastrar' : 'Atualizar'}
-            </button>
-          </form>
-        </Modal.Body>
-      </>
-    );
-  };
+          <button type="submit" className={action === 'new' ? 'btn btn-success ' : 'btn btn-primary'}>
+            {action === 'new' ? 'Cadastrar' : 'Atualizar'}
+          </button>
+        </form>
+      </Modal.Body>
+    </>
+  );
+};
 
 export default TravelRecordsForms;
