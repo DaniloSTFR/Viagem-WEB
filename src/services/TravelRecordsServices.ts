@@ -46,9 +46,9 @@ export class TravelRecordsServices {
     }
 
     private async getUsersTravelArray( travelEmployees:string[]){
-      let dataArrUsers: Users[] = [];
+      const dataArrUsers: Users[] = [];
       travelEmployees.forEach(async (employees: any) => { 
-        let useremployees = await this.usersServices.findUserByUid(employees);
+        const useremployees = await this.usersServices.findUserByUid(employees);
         dataArrUsers.push(useremployees);
       });
 
@@ -57,18 +57,26 @@ export class TravelRecordsServices {
 
     async getAllTravelRecords(company: string){
         let data: TravelRecords[] = [];
+      try {
 
         (await getDocs(query(this.travelRecordsCollectionRef, where('company', '==', company)))).forEach((docs: any) => {
           data.push(docs.data() as TravelRecords);
         });
 
-        data.forEach( async (docs: any) => {
-          docs.locationData = await this.locationsServices.findLocationsByUid(docs.location);
-          docs.teamData = await this.teamsServices.findTeamsByUid(docs.team);
-          docs.travelEmployeesUsers = await this.getUsersTravelArray(docs.travelEmployees);
+        data.forEach(async (docs: any) => {
           docs.arrivalDate = docs.arrivalDate.toDate();
           docs.departureDate = docs.departureDate.toDate();
+
+          docs.travelEmployeesUsers = await this.getUsersTravelArray(docs.travelEmployees);
+          //docs.locationData = await this.locationsServices.getLocationWithUid(docs.location);
+          //docs.teamData = await this.teamsServices.getTeamsUid(docs.team);
+          docs.teamData = await this.teamsServices.findTeamsByUid(docs.team);
+          docs.locationData = await this.locationsServices.findLocationsByUid(docs.location);
+
         });
+      } catch (err: any) {
+        console.log(err.message);
+      }
 
         return data;
     }// TODO: corrigir as conversões de data

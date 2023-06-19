@@ -26,9 +26,10 @@
     width: 2vw;
     height: 2vw;
     margin-bottom: 5px;
-  }
-  button:first-child {
     margin-right: 4px;
+  }
+  button:last-child {
+     margin-right: 0px;
   }
 
 

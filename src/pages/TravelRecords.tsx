@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Sidebar } from "../components/Sidebar";
-import PositionsList from "../components/positions/positionsList";
+import TravelRecordsList from "../components/travelRecords/travelRecordsList";
 import { Button, Modal } from "react-bootstrap";
-import PositionsForms from "../components/positions/positionsForms";
+import TravelRecordsForms from "../components/travelRecords/travelRecordsForms";
 
-export function Positions() {
+export function TravelRecords() {
   const [show, setShow] = useState({ open: false, function: "" });
 
   const handleClose = () => {setShow({ open: false, function: "" }); 
                              setRefreshComponent(!refreshComponent);};
-  const handleShow = () => setShow({ open: true, function: "NOVO CARGO" });
+  const handleShow = () => setShow({ open: true, function: "NOVO REGISTRO DE VIAGEM" });
   const [refreshComponent, setRefreshComponent] = useState(false);
   let data:any;
 
@@ -26,15 +26,15 @@ export function Positions() {
               className="btn btn-success btn-sm"
               onClick={handleShow}
             >
-              Adicionar Cargo
+              Adicionar no registro de Viagem
             </Button>
           </div>
 
           <Modal centered show={show.open} onHide={handleClose}>
-            <PositionsForms func={show.function} data={data} action='new' handleClose={handleClose}/>
+            <TravelRecordsForms func={show.function} data={data} action='new' handleClose={handleClose}/>
           </Modal>
 
-          <PositionsList refreshComponent = {refreshComponent} setRefreshComponent ={setRefreshComponent}/>
+          <TravelRecordsList refreshComponent = {refreshComponent} setRefreshComponent ={setRefreshComponent}/>
         </div>
       </main>
     </div>

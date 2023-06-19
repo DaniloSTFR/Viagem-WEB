@@ -1,8 +1,8 @@
 import { Positions } from '../types/Positions';
 // eslint-disable-next-line
-import { firebaseApp, auth, database } from './firebase';
+import { database } from './firebase';
 // eslint-disable-next-line
-import { addDoc, collection, doc, deleteDoc,  getDocs, getDoc, orderBy, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, deleteDoc,  getDocs, getDoc, orderBy, query, updateDoc, where } from "firebase/firestore";
 
 export class PositionsServices {
 
@@ -27,9 +27,9 @@ export class PositionsServices {
         await updateDoc(docRef, {isAdmPosition: isAdmPosition});
       }
 
-    async setIsActive(uid: string, isActive: boolean) {
+    async setIsActive(uid: string = '', isActive: boolean) {
         const docRef = doc(this.positionsCollectionRef, uid);
-        await updateDoc(docRef, {isAdmPosition: isActive});
+        await updateDoc(docRef, {isActive});
       }
 
     async findPositionsByUid(uid: string) {
@@ -55,12 +55,12 @@ export class PositionsServices {
     }
     
     //Precisa de correção dos parametros de insert de acordo com o banco
-    async updatePositions(uid: string, position: Positions) {
+    async updatePositions(uid: string = '' , position: Positions) {
         const docRef = doc(this.positionsCollectionRef, uid);
         await updateDoc(docRef, position);
     }
 
-    async deletePositions(uid: string) {
+    async deletePositions(uid: string = '') {
       const docRef = doc(this.positionsCollectionRef, uid);
       await deleteDoc(docRef);
     }

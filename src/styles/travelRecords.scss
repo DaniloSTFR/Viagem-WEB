@@ -1,0 +1,35 @@
+.inlineList {
+    display: flex;
+    flex-direction: column;
+    /* Below sets up your display method: flex-start|flex-end|space-between|space-around */
+    justify-content: flex-start; 
+    /* Below removes bullets and cleans white-space */
+    list-style: none;
+    padding: 0;
+    /* Bonus: forces no word-wrap */
+    white-space: nowrap;
+    list-style: none;
+    max-width:25rem;
+  }
+.multipla{
+    flex-direction: column !important;
+}
+
+.fontWeightTH{
+  th{
+    font-weight: normal;
+  }
+
+}
+
+
+
+  @media (max-width: 1000px){
+    .inlineList {
+      flex-direction: column;
+    }
+
+    .textareaanotacao{
+        width: 100%;
+    }
+  }
