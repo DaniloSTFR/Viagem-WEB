@@ -13,5 +13,5 @@ export type TravelRecords = {
     travelEmployees: string[];
     arrivalDate: Date,
     departureDate: Date,
-    company?: ' YTgh3NZ82IikUEnJBr9F',
+    company: string,
 }
