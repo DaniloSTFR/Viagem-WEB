@@ -35,7 +35,7 @@ export class PositionsServices {
     async findPositionsByUid(uid: string) {
         const docRef = doc(this.positionsCollectionRef, uid)
         const docSnap = await getDoc(docRef);
-        const positions = docSnap.data() as Positions;
+        const positions = await docSnap.data() as Positions;
         return positions;
     }
 

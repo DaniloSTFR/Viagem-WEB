@@ -3,6 +3,7 @@ import "../../styles/employees.scss";
 import EmployeesCard from "./employeesCard";
 import { Users } from "../../types/Users";
 import { UsersServices } from "../../services/UsersServices";
+import { PositionsServices } from "../../services/PositionsServices";
 
 type UserArray = {
   arr: Users[];
@@ -15,6 +16,7 @@ type Props = {
 
 const EmployeesList = ({ refreshComponent, setRefreshComponent }: Props) => {
   const usersServices = new UsersServices();
+  const positionsServices =  new PositionsServices();
   const [user, setUser] = useState<UserArray>({ arr: [] });
   const [show, setShow] = useState({ open: "", function: "" });
   const [showAlert, setShowAlert] = useState({
@@ -24,18 +26,21 @@ const EmployeesList = ({ refreshComponent, setRefreshComponent }: Props) => {
   });
 
   useEffect(() => {
-    async function getAllPositions() {
+    async function getAllUser() {
       try {
         const responsefirebase = await usersServices.getAllUser(
           "YTgh3NZ82IikUEnJBr9F"
         );
+
+        const responsefirebasepositions = await positionsServices.getAllPositions('YTgh3NZ82IikUEnJBr9F');
+
         setUser({ arr: responsefirebase });
         console.log(user.arr);
       } catch (err: any) {
         console.log(err.message);
       }
     }
-    getAllPositions();
+    getAllUser();
     // eslint-disable-next-line
   }, [show, refreshComponent]);
 
