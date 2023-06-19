@@ -28,7 +28,7 @@ export function Sidebar() {
             className="text-decoration-none"
             style={{ color: 'inherit' }}
           >
-            Sidebar
+            Viagem-Web
           </a>
         </CDBSidebarHeader>
 

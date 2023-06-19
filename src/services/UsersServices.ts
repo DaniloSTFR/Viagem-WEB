@@ -40,6 +40,9 @@ export class UsersServices {
         const docRef = doc(this.usersCollectionRef, uid)
         const docSnap = await getDoc(docRef);
         const user = docSnap.data() as Users;
+        const simpleName = user.fullName.split(" ");
+        user.simpleName = `${simpleName[0]} ${simpleName[simpleName.length-1]}`;
+
         if(user.position!==''){
             user.positionData = await this.positionsServices.findPositionsByUid(user.position);
         }

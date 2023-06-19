@@ -15,11 +15,11 @@ type Props = {
   handleClose : Function;
 }
 
-const TravelRecorsForms = ({ func, data, action, handleClose}: Props) => {
+const travelRecordsForms = ({ func, data, action, handleClose}: Props) => {
 
     return(
         <>
         </>
     );
 };
-export default TravelRecorsForms;
+export default travelRecordsForms;

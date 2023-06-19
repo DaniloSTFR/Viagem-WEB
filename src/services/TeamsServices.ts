@@ -28,7 +28,7 @@ export class TeamsServices {
     async findTeamsByUid(uid: string) {
         const docRef = doc(this.teamsCollectionRef, uid)
         const docSnap = await getDoc(docRef);
-        const teams = docSnap.data() as Teams;
+        const teams = await docSnap.data() as Teams;
 
         let dataArrUsers: Users[] = [];
         teams.teamEmployees.forEach(async (employees: any) => { 
@@ -39,6 +39,34 @@ export class TeamsServices {
 
         return teams as Teams;
     }
+
+    async findTeamsByUidWhithoutUsersDate(uid: string) {
+      const docRef = doc(this.teamsCollectionRef, uid)
+      const docSnap = await getDoc(docRef);
+      const teams = docSnap.data() as Teams;
+      teams.teamEmployeesUsers = [];
+
+      return teams as Teams;
+  }
+
+  async getTeamsUid(uid: string){
+    let data: any[] = [];
+  
+    (await getDocs(query(this.teamsCollectionRef, where('data', '==', data)))).forEach((docs: any) => {
+      data.push(docs.data() as any);
+    });
+
+    data.forEach( async (docs: any) => {
+      let dataArrUsers: Users[] = [];
+      docs.teamEmployees.forEach(async (employees: any) => { 
+        let useremployees = await this.usersServices.findUserByUid(employees);
+        dataArrUsers.push(useremployees);
+      });
+      docs.teamEmployeesUsers = dataArrUsers;
+    });
+
+    return data[0] as Teams;
+  }
 
     async getAllTeams(company: string){
         let data: any[] = [];
@@ -58,6 +86,21 @@ export class TeamsServices {
 
         return data as Teams[];
     }
+
+    async getAllTeamsSimple(company: string){
+      let data: any[] = [];
+    
+      (await getDocs(query(this.teamsCollectionRef, where('company', '==', company)))).forEach((docs: any) => {
+        data.push(docs.data() as any);
+      });
+
+      data.forEach( async (docs: any) => {
+        let dataArrUsers: Users[] = [];
+        docs.teamEmployeesUsers = dataArrUsers;
+      });
+
+      return data as Teams[];
+  }
 
     //Necessario para inserir o uid na coleção, refatorado
     private async updateUidTeams(uid: string) {

@@ -24,7 +24,7 @@ export class LocationsServices {
     async findLocationsByUid(uid: string) {
         const docRef = doc(this.locationsCollectionRef, uid)
         const docSnap = await getDoc(docRef);
-        const locations = docSnap.data() as Locations;
+        const locations = await docSnap.data() as Locations;
         return locations;
     }
 
@@ -36,6 +36,15 @@ export class LocationsServices {
         });
         return data;
     }
+
+    async getLocationWithUid(uid: string){
+      let data: Locations[] = [];
+
+      (await getDocs(query(this.locationsCollectionRef, where('uid', '==', uid)))).forEach((docs: any) => {
+        data.push(docs.data() as Locations);
+      });
+      return data[0];
+  }
 
     //Necessario para inserir o uid na coleção, refatorado
     private async updateUidLocations(uid: string) {
