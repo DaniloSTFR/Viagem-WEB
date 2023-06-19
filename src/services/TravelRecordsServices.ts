@@ -18,7 +18,7 @@ export class TravelRecordsServices {
     private locationsServices =  new LocationsServices();
     private convertDate =  new ConvertDate();
 
-    async createTravelRecords({ location, team, travelEmployees, arrivalDate, departureDate }: TravelRecords) {
+    async createTravelRecords({ location, team, travelEmployees, arrivalDate, departureDate, company = 'YTgh3NZ82IikUEnJBr9F' }: TravelRecords) {
         const newTravelRecords = await addDoc(this.travelRecordsCollectionRef, {
           location,
           departureDate: Timestamp.fromDate(departureDate),
@@ -88,7 +88,7 @@ export class TravelRecordsServices {
     }
     
     //Precisa de correção dos parametros de insert de acordo com o banco
-    async updateTravelRecords(uid: string, travelRecords: TravelRecords) {
+    async updateTravelRecords(uid: string = '' , travelRecords: TravelRecords) {
         const docRef = doc(this.travelRecordsCollectionRef, uid);
         await updateDoc(docRef, {
           location: travelRecords.location ,

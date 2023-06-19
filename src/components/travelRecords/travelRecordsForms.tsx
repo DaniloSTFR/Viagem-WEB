@@ -1,13 +1,20 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState} from "react";
 // eslint-disable-next-line
-import { Dropdown, DropdownButton, Modal } from "react-bootstrap";
+import { Dropdown, DropdownButton, Modal, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import "../../styles/teams.scss";
 import * as yup from "yup";
 import { TravelRecordsServices } from "../../services/TravelRecordsServices";
-import { TravelRecords } from '../../types/TravelRecords'; 
+import { LocationsServices } from "../../services/LocationsServices";
 
+import { TravelRecords } from '../../types/TravelRecords'; 
+import { Locations } from '../../types/Locations'; 
+import { locales } from "moment";
+import DateInput from "../shared/DateInput";
+import "react-datepicker/dist/react-datepicker.css";
+
+type ValuePiece = Date | null;
 
 type Props = {
   func: string;
@@ -22,7 +29,6 @@ interface IFormTravelRecords{
   team: string;
   state: string;
   city: string;
-  descriptionTravelRecords: string;
   travelEmployees: string[];
 }
 
@@ -60,15 +66,19 @@ const statesBrazil = [
 const schema = yup.object({
   arrivalDate: yup.string().required("*Informe a de Ida"),
   departureDate: yup.string().required("*Informe a de Volta"),
-  descriptionTeams: yup.string(),
-  teamEmployees: yup.array(),
-  isActive: yup.boolean(),
+  team: yup.string(),
+  state: yup.string(),
+  city: yup.string(),
+  travelEmployees: yup.array(),
+  
 });
 
 const TravelRecordsForms = ({ func, data, action, handleClose}: Props) => {
-  const teamsServices =  new TravelRecordsServices();
+  const travelRecordsServices =  new TravelRecordsServices();
+  const locationsServices =  new LocationsServices();
+  //const teamsServices =  new TravelRecordsServices();
 
-  const [TravelRecords, setTravelRecords] = useState<TravelRecords>({
+  const [travelRecords, setTravelRecords] = useState<TravelRecords>({
     uid: action === 'update' ? data.uid : '',
     location: action === 'update' ? data.location : '',
     locationData: action === 'update' ? data.locationData : undefined,
@@ -78,13 +88,258 @@ const TravelRecordsForms = ({ func, data, action, handleClose}: Props) => {
     travelEmployees: action === 'update' ? data.travelEmployees : [],
     arrivalDate: action === 'update' ? data.arrivalDate : new Date(),
     departureDate: action === 'update' ? data.departureDate : new Date(),
-    company: action === 'update' ? data.company : '',
+    company: action === 'update' ? data.company : 'YTgh3NZ82IikUEnJBr9F',
   });
 
-    return(
-        <>
-        </>
+  const [travelEmployeesUsers, setTravelEmployeesUsers] = useState<any>(action === 'update' ? data.travelEmployeesUsers : []);
+  const [arrivalDate, setArrivalDateDate] = useState<ValuePiece>(action === 'update' ? data.arrivalDate : new Date());
+  const [departureDate, setDepartureDate] = useState<ValuePiece>(action === 'update' ? data.departureDate : new Date());
+
+  const [locationData, setLocationData] = useState<Locations>({
+        uid: action === 'update' ? data.location : '',
+        city: action === 'update' && data.locationData? data.locationData.city : '',
+        country: action === 'update' && data.locationData? data.locationData.country : '',
+        state: action === 'update' && data.locationData? data.locationData.state : '',
+        company: action === 'update' ? data.team : 'YTgh3NZ82IikUEnJBr9F',
+  });
+
+
+
+  // eslint-disable-next-line
+    let queue: any;
+    const handleDepartureDate = (event: any) => {
+      console.log(event);
+      setDepartureDate(event);
+    }
+
+    const handleArrivalDate = (event: any) => {
+      console.log(event);
+      setArrivalDateDate(event);
+    }
+  
+    const handleChange = (event: any) => {
+
+      console.log(event.target.name);
+
+      let local:Locations = {
+        uid: action === 'update' ? locationData.uid : '',
+        city: action === 'update' && locationData.city? locationData.city : '',
+        country: action === 'update' && locationData.country? locationData.country : '',
+        state: action === 'update' && locationData.state? locationData.state : '',
+        company: action === 'update' ? locationData.company : 'YTgh3NZ82IikUEnJBr9F',
+      }
+      if(  event.target.name === 'state'|| event.target.name === 'city'){
+        console.log(event.target.value);
+        local = {
+          uid: local.uid ? local.uid : locationData.uid,
+          city: event.target.name === 'city' ? event.target.value : locationData.city, 
+          country: 'Brasil',
+          state: event.target.name === 'state' ? event.target.value : locationData.state,
+          company: local.company,
+        }
+
+      }
+
+      setLocationData(local);
+      
+      setTravelRecords({
+        uid: travelRecords.uid,
+        location: travelRecords.location,
+        locationData: local,
+        team:  event.target.name === 'teams' ? event.target.value : travelRecords.team,
+        teamData: travelRecords.teamData, //<----------- update
+        travelEmployeesUsers: action === 'update' ? data.travelEmployeesUsers : undefined,
+        travelEmployees: travelRecords.travelEmployees, //<--------------- update
+        arrivalDate: arrivalDate as Date,
+        departureDate: departureDate as Date,
+        company: travelRecords.company,
+      });
+    };
+  
+  // eslint-disable-next-line
+ 
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+      reset,
+    } = useForm<IFormTravelRecords>({
+      resolver: yupResolver(schema),
+    });
+  
+    const onSubmitHandler = async (teamsData: IFormTravelRecords) => {
+      try {
+        if (action === 'new') {
+
+          const newLocation = await locationsServices.createLocations(locationData);
+
+          const uidNewTravel= await travelRecordsServices.createTravelRecords(
+            {
+              location: newLocation, 
+              team: travelRecords.team, 
+              travelEmployees: travelRecords.travelEmployees, //<-----
+              arrivalDate: travelRecords.arrivalDate, 
+              departureDate: travelRecords.departureDate, 
+              company: 'YTgh3NZ82IikUEnJBr9F'
+            });
+          reset();
+          if(uidNewTravel) handleClose();
+
+        }else if(action === 'update'){
+          await travelRecordsServices.updateTravelRecords(travelRecords.uid, travelRecords);
+          handleClose();
+        }     
+      } catch (err: any) {
+        console.log(err.message);
+      }
+    };
+  
+    return (
+      <>
+        <Modal.Header closeButton>
+          <Modal.Title>{func}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form id='form-teams' onSubmit={handleSubmit(onSubmitHandler)}>
+
+
+
+            <div className="input-group mb-3">
+              <span className="input-group-text" id="basic-addon1">
+                Ida:
+              </span>
+                  <DateInput
+                      value={departureDate}
+                      startdate={departureDate}
+                      onChange={handleDepartureDate}
+                      id="departureDate"
+                      name="departureDate"
+                      type="date"
+                      className="form-control"
+                  />
+            </div>
+
+            <div className="input-group mb-3">
+              <span className="input-group-text" id="basic-addon1">
+                Volta:
+              </span>
+                  <DateInput
+                      value={arrivalDate}
+                      startdate={arrivalDate}
+                      onChange={handleArrivalDate}
+                      id="departureDate"
+                      name="departureDate"
+                      type="date"
+                      className="form-control"
+                  />
+            </div>
+
+            <div className="input-group mb-3">
+            <span className="input-group-text" id="basic-addon1">
+              <i className="bi bi-archive"></i>
+            </span>
+            <Form.Select
+              {...register("state")}
+              onChange={handleChange}
+              aria-label="Cargo"
+              value={locationData.state}
+            >
+              <option>Selecione o estado</option>
+              {statesBrazil.map((state) => {
+                return (
+                  <option key={state.uf} value={state.uf}  >
+                    {state.nameUF}
+                  </option>
+                );
+              })}
+            </Form.Select>
+          </div>
+          <div className="input-group mb-3">
+              <span className="input-group-text" id="basic-addon1">
+                <i className="bi bi-file-person"></i>
+              </span>
+              <input
+                className="form-control"
+                {...register("city")}
+                placeholder="Cidade"
+                type="text"
+                onChange={handleChange}
+                value={locationData.city}
+                required
+              />
+            </div>
+{/*             <div className="input-group mb-3">
+              <span className="input-group-text" id="basic-addon1">
+                <i className="bi bi-file-person"></i>
+              </span>
+              <input
+                className="form-control"
+                {...register("descriptionTeams")}
+                placeholder="Descrição da equipe"
+                type="text"
+                onChange={handleChange}
+                value={teams.descriptionTeams}
+                required
+              />
+            </div>
+            <div className="input-group mb-3">
+              <div className="input-group-text">
+                <input
+                  {...register("isActive")}
+                  className="form-check-input mt-0"
+                  type="checkbox"
+                  onChange={handleChange}
+                  checked={teams.isActive}
+                  aria-label="Checkbox for following text input"
+                />
+              </div>
+              <input
+                type="text"
+                disabled
+                className="form-control"
+                aria-label="Ativo"
+                placeholder="Ativo"
+              />
+            </div> */}
+
+            {action === 'update' ? 
+                <table className="table table-form table-bordered table-striped mb-0">
+                  <thead className="sticky-top">
+                    <tr>
+                      <th scope="col"></th>
+                      <th scope="col">NomeFuncionario</th>
+                      <th scope="col">Cargo</th>
+                      <th scope="col">Presente na<br/>Viagem</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {travelEmployeesUsers.map((employees: any, index: any) => {
+                      return (
+                          <tr key={employees.uid}>
+                            <th scope="row">{index+1}</th>
+                            <td>{employees.fullName}</td>
+                            <td>{employees.positionData? employees.positionData.namePosition: 'Não definido'}</td>
+                            <th>
+                              <input
+                                disabled
+                                type="checkbox"
+                                checked={employees.isActive}
+                              ></input>
+                            </th>
+                          </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+            : ''}
+
+            <button type="submit" className= { action === 'new' ? 'btn btn-success ' : 'btn btn-primary'}>
+              { action === 'new' ? 'Cadastrar' : 'Atualizar'}
+            </button>
+          </form>
+        </Modal.Body>
+      </>
     );
-};
+  };
 
 export default TravelRecordsForms;
