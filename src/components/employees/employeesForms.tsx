@@ -1,72 +1,136 @@
-import React from "react";
+import { useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { Dropdown, DropdownButton, Modal } from "react-bootstrap";
+import { Dropdown, DropdownButton, Form, Modal } from "react-bootstrap";
+import { Positions } from "../../types/Positions";
+import { UsersServices } from "../../services/UsersServices";
+import { PositionsServices } from "../../services/PositionsServices";
+import { TeamsServices } from "../../services/TeamsServices";
+import { Teams } from "../../types/Teams";
 
 interface IEmployee {
-  nome: string;
+  fullName: string;
   email: string;
   company: string;
-  isAdministrador: boolean;
+  isAdmin: boolean;
   cpf: string;
-  cargo: string;
-  senha: string;
+  position: string;
+  password: string;
+  team: string;
 }
 
-const positions = [
-  {
-    id: 1,
-    nomeCargo: 'Master',
-    descricaoCargo: 'master',
-    isAdmPosition: true
-  }
-]
+type PositionsArray = {
+  arr: Positions[];
+};
+type TeamsArray = {
+  arr: Teams[];
+};
 
 const schema = yup.object({
-  nome: yup.string().required("*Informe o nome completo do funcionario"),
+  fullName: yup
+    .string()
+    .required("*Informe o fullName completo do funcionario"),
   email: yup.string().required("*Email é obrigatorio"),
-  company: yup.string().required("*Company é obriatoria"),
-  isAdministrador: yup.boolean(),
+  company: yup.string(),
+  isAdmin: yup.boolean(),
   cpf: yup.string().required("*CPF é obrigatorio"),
-  cargo: yup.string(),
-  senha: yup.string().min(8).max(32).required(),
+  position: yup.string(),
+  team: yup.string(),
+  password: yup.string().min(8).max(32).required(),
 });
 
-const EmployeesForms = ({ func, data }: any) => {
+const EmployeesForms = ({
+  func,
+  data,
+  action,
+  handleClose,
+  refreshComponent,
+  setRefreshComponent,
+}: any) => {
+  const userServices = new UsersServices();
+  const positionsServices = new PositionsServices();
+  const teamsServices = new TeamsServices();
+  const [positions, setPositions] = useState<PositionsArray>({ arr: [] });
+  const [show, setShow] = useState({ open: "", function: "" });
+  const [teams, setTeams] = useState<TeamsArray>({ arr: [] });
   const [employee, setEmployee] = useState({
-    nome: data ? data.nome : "",
+    uid: data ? data.uid : "",
+    fullName: data ? data.fullName : "",
     email: data ? data.email : "",
     company: data ? data.company : "",
-    isAdministrador: data ? data.isAdministrador : false,
+    isAdmin: data ? data.isAdmin : false,
     isActive: data ? data.isActive : false,
     cpf: data ? data.cpf : "",
-    cargo: data ? data.cargo : "",
-    senha: data ? data.senha : "",
+    team: data ? data.team : "",
+    position: data ? data.position : "",
+    password: data ? data.password : "",
   });
 
   const handleChange = (event: any) => {
-    if (typeof (event) === 'string') {
-      employee.cargo = event;
-      console.log(employee)
-    } else {
-      setEmployee(event.target.value);
-    }
-
+    setEmployee(event.target.value);
   };
+
+  useEffect(() => {
+    async function getAllPositions() {
+      try {
+        const responsePositionFirebase =
+          await positionsServices.getAllPositions("YTgh3NZ82IikUEnJBr9F");
+        const responseTeamFirebase = await teamsServices.getAllTeams(
+          "YTgh3NZ82IikUEnJBr9F"
+        );
+        setPositions({ arr: responsePositionFirebase });
+        setTeams({ arr: responseTeamFirebase });
+      } catch (err: any) {
+        console.log(err.message);
+      }
+    }
+    getAllPositions();
+    // eslint-disable-next-line
+  }, [show, refreshComponent]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
+  } = useForm<IEmployee>({
     resolver: yupResolver(schema),
   });
-  const onSubmitHandler = (data: any) => {
-    console.log({ data });
-    reset();
+  const onSubmitHandler = async (data: any) => {
+    console.log(data);
+    try {
+      if (action === "new") {
+        const uidNewEmployee = await userServices.createUser({
+          fullName: data.fullName,
+          cpf: data.cpf,
+          email: data.email,
+          isActive: data.isActive,
+          isAdmin: data.isAdmin,
+          position: data.position,
+          teams: data.team,
+          company: data.company,
+          password: data.password,
+        });
+        reset();
+        if (uidNewEmployee) handleClose();
+      } else if (action === "udpate") {
+        await userServices.updateUser(employee.uid, {
+          fullName: data.fullName,
+          cpf: data.cpf,
+          email: data.email,
+          isActive: data.isActive,
+          isAdmin: data.isAdmin,
+          position: data.position,
+          teams: data.team,
+          company: data.company,
+        });
+        handleClose();
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
   return (
     <>
@@ -81,11 +145,11 @@ const EmployeesForms = ({ func, data }: any) => {
             </span>
             <input
               className="form-control"
-              {...register("nome")}
+              {...register("fullName")}
               placeholder="nome completo"
               type="text"
               onChange={handleChange}
-              value={employee.nome}
+              value={employee.fullName}
               required
             />
           </div>
@@ -114,7 +178,6 @@ const EmployeesForms = ({ func, data }: any) => {
               type="text"
               onChange={handleChange}
               value={employee.company}
-              required
             />
           </div>
           <div className="input-group mb-3">
@@ -135,21 +198,39 @@ const EmployeesForms = ({ func, data }: any) => {
             <span className="input-group-text" id="basic-addon1">
               <i className="bi bi-archive"></i>
             </span>
-            <DropdownButton
-              title="Cargos"
-              id="dropdown-menu-align-right"
-              onSelect={handleChange}
-              variant="secondary"
+            <Form.Select
+              {...register("position")}
+              onChange={handleChange}
+              aria-label="Cargo"
             >
-              {
-                positions.map(pos => {
-                  return (
-                    <Dropdown.Item key={pos.id} eventKey={pos.id} value={pos}>{pos.nomeCargo}</Dropdown.Item>
-                  )
-                })
-              }
-            </DropdownButton>
-
+              <option>Selecione um cargo</option>
+              {positions.arr.map((pos) => {
+                return (
+                  <option key={pos.uid} value={pos.uid}>
+                    {pos.namePosition}
+                  </option>
+                );
+              })}
+            </Form.Select>
+          </div>
+          <div className="input-group mb-3">
+            <span className="input-group-text" id="basic-addon1">
+              <i className="bi bi-archive"></i>
+            </span>
+            <Form.Select
+              {...register("team")}
+              onChange={handleChange}
+              aria-label="Cargo"
+            >
+              <option>Selecione uma equipe</option>
+              {teams.arr.map((team) => {
+                return (
+                  <option key={team.uid} value={team.uid}>
+                    {team.nameTeams}
+                  </option>
+                );
+              })}
+            </Form.Select>
           </div>
           {func === "NOVO USUARIO" ? (
             <div className="input-group mb-3">
@@ -157,12 +238,12 @@ const EmployeesForms = ({ func, data }: any) => {
                 <i className="bi bi-lock"></i>
               </span>
               <input
-                {...register("senha")}
-                placeholder="senha"
+                {...register("password")}
+                placeholder="Senha"
                 className="form-control"
                 type="password"
                 onChange={handleChange}
-                value={employee.senha}
+                value={employee.password}
                 required
               />{" "}
             </div>
@@ -170,11 +251,11 @@ const EmployeesForms = ({ func, data }: any) => {
           <div className="input-group mb-3">
             <div className="input-group-text">
               <input
-                {...register("isAdministrador")}
+                {...register("isAdmin")}
                 className="form-check-input mt-0"
                 type="checkbox"
                 onChange={handleChange}
-                checked={employee.isAdministrador}
+                checked={employee.isAdmin}
                 aria-label="Checkbox for following text input"
               />
             </div>
@@ -189,7 +270,7 @@ const EmployeesForms = ({ func, data }: any) => {
           <div className="input-group mb-3">
             <div className="input-group-text">
               <input
-                {...register("isAdministrador")}
+                {...register("isAdmin")}
                 className="form-check-input mt-0"
                 type="checkbox"
                 onChange={handleChange}
@@ -205,16 +286,12 @@ const EmployeesForms = ({ func, data }: any) => {
               placeholder="Ativo"
             />
           </div>
-
-          {func === "NOVO USUARIO" ? (
-            <button type="submit" className="btn btn-success">
-              Cadastrar
-            </button>
-          ) : (
-            <button type="submit" className="btn btn-success">
-              Salvar
-            </button>
-          )}
+          <button
+            type="submit"
+            className={action === "new" ? "btn btn-success" : "btn btn-primary"}
+          >
+            {action === "new" ? "Cadastrar" : "Atualizar"}
+          </button>
         </form>
       </Modal.Body>
     </>
