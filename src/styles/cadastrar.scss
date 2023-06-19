@@ -5,8 +5,8 @@
   width: 100% !important;
   margin-left: 0px !important;
   margin-right: 0px !important;
-  background: linear-gradient(122.59deg, #57B6E5 0%, #8257E5 69.5%);
-  color: #FFF;
+  background: linear-gradient(122.59deg, #121516 0%, #9a93aa 69.5%);
+  color: #fff;
 
   img {
     max-width: 50px;
@@ -15,18 +15,17 @@
     //margin-top: -110px;
     //width: 15rem !important;
   }
-  @media (max-width: 450px){
+  @media (max-width: 450px) {
     height: 19vh;
   }
-  button{
+  button {
     border: 0px;
     background: transparent;
   }
 
-  .aside{
+  .aside {
     padding-top: 10px;
   }
-
 }
 
 #page-form {
@@ -37,28 +36,26 @@
   margin-right: 0px !important;
   padding-top: 20px;
 
-
   .aside {
     //flex: 7;
     padding-top: 80px;
     padding: 10px 80px;
 
-    @media (max-width: 450px){
+    @media (max-width: 450px) {
       img {
         width: 250px !important;
         margin-top: -80px !important;
         margin-left: -10px !important;
       }
-
     }
 
     strong {
-      font: 700 36px 'Poppins', sans-serif;
+      font: 700 36px "Poppins", sans-serif;
       line-height: 42px;
       margin-top: 16px;
     }
 
-    input{
+    input {
       border-radius: 8px !important;
       font-size: 20px !important;
     }
@@ -70,57 +67,55 @@
     }
 
     /* Firefox */
-    input[type=number] {
+    input[type="number"] {
       -moz-appearance: textfield;
     }
-    
-    button{
+
+    button {
       border-radius: 16px !important;
     }
 
-    h5{
+    h5 {
       color: #df0b0b;
-      font-size: 1.0rem !important;
+      font-size: 1rem !important;
       text-align: left;
     }
-    
   }
 
-  @media (max-width: 450px){
+  @media (max-width: 450px) {
     .aside {
-      padding: 0px 15px!important;
+      padding: 0px 15px !important;
     }
   }
-
 
   .separator {
     font-size: 14px;
-    color: #FFF;
+    color: #fff;
 
     margin: 32px 0;
     display: flex;
     align-items: center;
 
     &::before {
-      content: '';
+      content: "";
       flex: 1;
       height: 1px;
-      background: #FFF;
+      background: #fff;
       margin-right: 16px;
     }
 
     &::after {
-      content: '';
+      content: "";
       flex: 1;
       height: 1px;
-      background: #FFF;
+      background: #fff;
       margin-left: 16px;
     }
   }
 }
 
-@media (min-width: 1400px){
+@media (min-width: 1400px) {
   .container {
-    width: 100% !important;  
+    width: 100% !important;
   }
 }
